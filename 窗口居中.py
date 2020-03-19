@@ -13,10 +13,14 @@ class CenterForm(QMainWindow):  # 继承主窗口
 		self.setWindowTitle('窗口居中')
 		# 设置尺寸
 		self.resize(400, 300)
+		self.center()#调用定义函数
 
 	def center(self):
+		'''
+		系统默认窗口居中,该方法可以修改窗口打开的出现位置,其窗口的坐标以左上角为基准点
+		'''
 		#获取屏幕坐标系
-		screen = QDesktopWidget().screenFeometry()
+		screen = QDesktopWidget().screenGeometry()
 		#获取窗口坐标系
 		size = self.geometry()
 
@@ -29,5 +33,6 @@ class CenterForm(QMainWindow):  # 继承主窗口
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
 	main = CenterForm()
+	# main.center()#也可在此处调用
 	main.show()
 	sys.exit(app.exec_())
