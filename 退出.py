@@ -16,7 +16,6 @@ class QuitApp(QMainWindow):
 		#信号与槽绑定
 		self.button1.clicked.connect(self.onClick_Button)
 		#创建水平布局layout
-
 		layout = QHBoxLayout()
 		#水平布局上加入按钮button1
 		layout.addWidget(self.button1)
