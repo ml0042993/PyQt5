@@ -29,7 +29,7 @@ class QuitApp(QMainWindow):
 	def onClick_Button(self):
 		sender = self.sender()
 		print(sender.text())
-
+		#QApplication对象的指针可以通过instance()函数
 		app = QApplication.instance()
 		print(app.__doc__)
 		app.quit()
