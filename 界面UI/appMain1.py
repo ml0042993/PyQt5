@@ -15,7 +15,8 @@ ui.setupUi(baseWidget)#setupUi在ui_FormHello中只创建窗体上的其他组�
 
 baseWidget.show()#不能使用ui.show(),ui的基类是object,不是窗体界面的类
 
-#修改标签上的文字,不能运行
+#修改标签上的文字,不能运行,
+
 ##ui.LabHello.setText('Hello , 我被修改')
 
 sys.exit(app.exec_())
