@@ -17,7 +17,8 @@ baseWidget.show()#不能使用ui.show(),ui的基类是object,不是窗体界面�
 
 #修改标签上的文字,不能运行,
 
-##ui.LabHello.setText('Hello , 我被修改')
+# ui.LabHello.setText('Hello , 我被修改')
+ui.labelHello.setText('Hello , 我被修改')
 
 sys.exit(app.exec_())
 
