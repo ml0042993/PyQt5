@@ -1,6 +1,12 @@
-#单继承与界面独立封装方式
+'''
+单继承与界面独立封装方式
 
-#单继承能够更好的进行界面与逻辑的分离
+单继承能够更好的进行界面与逻辑的分离
+优点：
+窗体对象被定义为QmyWidget类的私有属性self.ui，外部无法调用，只能通过内部接口函数实现调用（def setBtnText(self,aText):），然后在应用程序中修改（myWidget.setBtnText('间接设置')）
+窗体组件不会与QmyWidget内定义的属性混淆
+
+'''
 
 import sys
 from PyQt5.QtWidgets import QApplication,QWidget
@@ -35,9 +41,3 @@ if __name__ == '__main__':
 	myWidget.setBtnText('间接设置')
 	sys.exit(app.exec_())
 
-'''
-优点：
-窗体对象被定义为QmyWidget类的私有属性self.ui，外部无法调用，只能通过内部接口函数实现调用（def setBtnText(self,aText):），然后在应用程序中修改（myWidget.setBtnText('间接设置')）
-窗体组件不会与QmyWidget内定义的属性混淆
-
-'''
