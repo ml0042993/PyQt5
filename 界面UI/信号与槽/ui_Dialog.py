@@ -86,6 +86,8 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
         self.btnOk.clicked.connect(Dialog.accept)
         self.btnClose.clicked.connect(Dialog.close)
+        #QMetaObject元类，功能为搜索Diagol上的所有从属组件，将匹配的信号和槽函数关联
+        #所设定的函数格式为on_<object name>_<signal_name>(<signal parameters>)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
