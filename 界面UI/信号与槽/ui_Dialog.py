@@ -49,9 +49,9 @@ class Ui_Dialog(object):
         self.radioBlack = QtWidgets.QRadioButton(self.groupBox_2)
         self.radioBlack.setObjectName("radioBlack")
         self.horizontalLayout_3.addWidget(self.radioBlack)
-        self.radioBule = QtWidgets.QRadioButton(self.groupBox_2)
-        self.radioBule.setObjectName("radioBule")
-        self.horizontalLayout_3.addWidget(self.radioBule)
+        self.radioBlue = QtWidgets.QRadioButton(self.groupBox_2)
+        self.radioBlue.setObjectName("radioBlue")
+        self.horizontalLayout_3.addWidget(self.radioBlue)
         self.radioRed = QtWidgets.QRadioButton(self.groupBox_2)
         self.radioRed.setObjectName("radioRed")
         self.horizontalLayout_3.addWidget(self.radioRed)
@@ -99,7 +99,7 @@ class Ui_Dialog(object):
         self.checkBoxItalic.setText(_translate("Dialog", "Italic"))
         self.groupBox_2.setTitle(_translate("Dialog", "GroupBox"))
         self.radioBlack.setText(_translate("Dialog", "Black"))
-        self.radioBule.setText(_translate("Dialog", "Bule"))
+        self.radioBlue.setText(_translate("Dialog", "Blue"))
         self.radioRed.setText(_translate("Dialog", "Red"))
         self.TextEdit.setPlainText(_translate("Dialog", "PyQt5 编程指南\n"
 "python 和 Qt\n"
