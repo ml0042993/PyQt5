@@ -12,3 +12,19 @@ Dialog::~Dialog()
 {
     delete ui;
 }
+
+
+void Dialog::on_checkBoxBold_toggled(bool checked)
+{
+
+}
+
+void Dialog::on_btnClear_clicked()
+{
+
+}
+
+void Dialog::on_checkBoxBold_clicked()
+{
+
+}
