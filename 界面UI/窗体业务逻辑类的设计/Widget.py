@@ -1,0 +1,103 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'Widget.ui'
+#
+# Created by: PyQt5 UI code generator 5.13.0
+#
+# WARNING! All changes made in this file will be lost!
+
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_Widget(object):
+    def setupUi(self, Widget):
+        Widget.setObjectName("Widget")
+        Widget.resize(400, 277)
+        self.verticalLayout = QtWidgets.QVBoxLayout(Widget)
+        self.verticalLayout.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.groupBox_Age = QtWidgets.QGroupBox(Widget)
+        self.groupBox_Age.setObjectName("groupBox_Age")
+        self.gridLayout = QtWidgets.QGridLayout(self.groupBox_Age)
+        self.gridLayout.setContentsMargins(11, 11, 11, 11)
+        self.gridLayout.setSpacing(6)
+        self.gridLayout.setObjectName("gridLayout")
+        self.label_3 = QtWidgets.QLabel(self.groupBox_Age)
+        self.label_3.setObjectName("label_3")
+        self.gridLayout.addWidget(self.label_3, 2, 0, 1, 1)
+        self.editAgeInt = QtWidgets.QLineEdit(self.groupBox_Age)
+        self.editAgeInt.setObjectName("editAgeInt")
+        self.gridLayout.addWidget(self.editAgeInt, 1, 1, 1, 1)
+        self.sliderSetAge = QtWidgets.QSlider(self.groupBox_Age)
+        self.sliderSetAge.setMaximum(100)
+        self.sliderSetAge.setOrientation(QtCore.Qt.Horizontal)
+        self.sliderSetAge.setObjectName("sliderSetAge")
+        self.gridLayout.addWidget(self.sliderSetAge, 0, 1, 1, 1)
+        self.editAgeStr = QtWidgets.QLineEdit(self.groupBox_Age)
+        self.editAgeStr.setObjectName("editAgeStr")
+        self.gridLayout.addWidget(self.editAgeStr, 2, 1, 1, 1)
+        self.label = QtWidgets.QLabel(self.groupBox_Age)
+        self.label.setObjectName("label")
+        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+        self.label_2 = QtWidgets.QLabel(self.groupBox_Age)
+        self.label_2.setObjectName("label_2")
+        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
+        self.verticalLayout.addWidget(self.groupBox_Age)
+        self.groupBox_Name = QtWidgets.QGroupBox(Widget)
+        self.groupBox_Name.setObjectName("groupBox_Name")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.groupBox_Name)
+        self.gridLayout_2.setContentsMargins(11, 11, 11, 11)
+        self.gridLayout_2.setSpacing(6)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.btnSetName = QtWidgets.QPushButton(self.groupBox_Name)
+        self.btnSetName.setObjectName("btnSetName")
+        self.gridLayout_2.addWidget(self.btnSetName, 0, 2, 1, 1)
+        self.editNameInput = QtWidgets.QLineEdit(self.groupBox_Name)
+        self.editNameInput.setObjectName("editNameInput")
+        self.gridLayout_2.addWidget(self.editNameInput, 0, 1, 1, 1)
+        self.label_5 = QtWidgets.QLabel(self.groupBox_Name)
+        self.label_5.setObjectName("label_5")
+        self.gridLayout_2.addWidget(self.label_5, 1, 0, 1, 1)
+        self.editNameHello = QtWidgets.QLineEdit(self.groupBox_Name)
+        self.editNameHello.setObjectName("editNameHello")
+        self.gridLayout_2.addWidget(self.editNameHello, 1, 1, 1, 2)
+        self.label_4 = QtWidgets.QLabel(self.groupBox_Name)
+        self.label_4.setObjectName("label_4")
+        self.gridLayout_2.addWidget(self.label_4, 0, 0, 1, 1)
+        self.verticalLayout.addWidget(self.groupBox_Name)
+        self.frame_Button = QtWidgets.QFrame(Widget)
+        self.frame_Button.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_Button.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_Button.setObjectName("frame_Button")
+        self.pushButton_2 = QtWidgets.QPushButton(self.frame_Button)
+        self.pushButton_2.setGeometry(QtCore.QRect(260, 20, 75, 23))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/icons/images/close.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_2.setIcon(icon)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.verticalLayout.addWidget(self.frame_Button)
+        self.label_3.setBuddy(self.editAgeStr)
+        self.label.setBuddy(self.sliderSetAge)
+        self.label_2.setBuddy(self.editAgeInt)
+        self.label_5.setBuddy(self.editNameHello)
+        self.label_4.setBuddy(self.editNameInput)
+
+        self.retranslateUi(Widget)
+        QtCore.QMetaObject.connectSlotsByName(Widget)
+
+    def retranslateUi(self, Widget):
+        _translate = QtCore.QCoreApplication.translate
+        Widget.setWindowTitle(_translate("Widget", "Widget"))
+        self.groupBox_Age.setTitle(_translate("Widget", "年龄设置"))
+        self.label_3.setText(_translate("Widget", "ageChanged(str)响应"))
+        self.label.setText(_translate("Widget", "设置年龄"))
+        self.label_2.setText(_translate("Widget", "ageChanged(int)响应"))
+        self.groupBox_Name.setTitle(_translate("Widget", "姓名设置"))
+        self.btnSetName.setText(_translate("Widget", "设置姓名"))
+        self.editNameInput.setText(_translate("Widget", "Mike"))
+        self.label_5.setText(_translate("Widget", "nameChanged(str)响应"))
+        self.label_4.setText(_translate("Widget", "输入姓名"))
+        self.pushButton_2.setText(_translate("Widget", "关闭"))
+import res_rc
