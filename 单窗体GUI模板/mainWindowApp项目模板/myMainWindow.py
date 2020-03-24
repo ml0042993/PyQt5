@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication,QDialog
+from PyQt5.QtWidgets import QApplication,QMainWindow
 from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt
 # from PyQt5.QtGui import
 # from PyQt5.QtWidgets import
