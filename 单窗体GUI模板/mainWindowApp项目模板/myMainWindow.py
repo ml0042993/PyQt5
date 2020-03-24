@@ -9,7 +9,7 @@ from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt
 
 from ui_MainWindow import Ui_MainWindow
 
-class QmyMainWindow(QDialog):
+class QmyMainWindow(QMainWindow):
 	def __init__(self,parent=None):
 		super().__init__(parent)#调用父类构造函数,创建窗体
 		self.ui = Ui_MainWindow()#创建Ui对象
