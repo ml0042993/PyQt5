@@ -10,12 +10,12 @@ from PyQt5.QtCore import pyqtSlot
 from ui_Dialog import Ui_Dialog
 
 class QmyDialog(QDialog):
-'''
-text()是获取文本内容
-setText()是设置文本内容
-value()是获取数值int或者float型
-setValue()是赋值
-'''
+	'''
+	text()是获取文本内容
+	setText()是设置文本内容
+	value()是获取数值int或者float型
+	setValue()是赋值
+	'''
 	def __init__(self,parent=None):
 		super().__init__(parent)#调用父类构造函数,创建窗体
 		self.ui = Ui_Dialog()#创建Ui对象
