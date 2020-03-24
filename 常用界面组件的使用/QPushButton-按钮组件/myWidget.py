@@ -19,12 +19,28 @@ class QmyWidget(QWidget):
 	##==========事件处理函数===========
 
 	##==========由connectSlotsByName()自动关联的槽函数====
-	def on_btnAlign_Left_Clicked(self):
+	def on_btnAlign_Left_clicked(self):
 		self.ui.editInput.setAlignment(Qt.AlignLeft)
-	def on_btnAlign_Center_Clicked(self):
+	def on_btnAlign_Center_clicked(self):
 		self.ui.editInput.setAlignment(Qt.AlignCenter)
-	def on_btnAlign_Right_Clicked(self):
+	def on_btnAlign_Right_clicked(self):
 		self.ui.editInput.setAlignment(Qt.AlignRight)
+
+	@pyqtSlot(bool)
+	def on_btnFont_Bold_clicked(self,checked):
+		font = self.ui.editInput.font()
+		font.setBold(checked)
+		self.ui.editInput.setFont(font)
+	@pyqtSlot(bool)
+	def on_btnFont_Italic_clicked(self,checked):
+		font = self.ui.editInput.font()
+		font.setItalic(checked)
+		self.ui.editInput.setFont(font)
+	@pyqtSlot(bool)
+	def on_btnFont_UnderLine_clicked(self,checked):
+		font = self.ui.editInput.font()
+		font.setUnderline(checked)
+		self.ui.editInput.setFont(font)
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
