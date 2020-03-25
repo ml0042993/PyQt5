@@ -34,7 +34,7 @@ class QmyWidget(QWidget):
 		self.ui.btnSetIntv.setEnabled(False)
 
 
-	def on_btnStop_cilcked(self):
+	def on_btnStop_clicked(self):
 		self.timer.stop()
 		tmMs = self.counter.elapsed()#计时器经过的时间
 		ms = tmMs%1000#毫秒
