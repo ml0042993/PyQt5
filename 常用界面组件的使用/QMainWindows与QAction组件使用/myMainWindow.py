@@ -26,11 +26,12 @@ class QmyMainWindow(QMainWindow):
 		self.__LabFile.setText('文件名: ')
 		self.ui.statusBar.addWidget(self.__LabFile)#添加到状态栏
 
-		self.__progressBar1 = QProgressBar(self)
-		self.__progressBar1.setMaximumWidth(200)
-		self.__progressBar1.setMinimum(5)
-		self.__progressBar1.setMaximum(50)
+		self.__progressBar1 = QProgressBar(self)#实例进度条
+		self.__progressBar1.setMaximumWidth(200)#设定最大宽度
+		self.__progressBar1.setMinimum(5)#设置最小值
+		self.__progressBar1.setMaximum(50)#设置最大值
 		sz = self.ui.textEdit.font().pointSize()
+		print(sz)
 		self.__progressBar1.setValue(sz)
 		self.ui.statusBar.addWidget(self.__progressBar1)
 
@@ -38,15 +39,15 @@ class QmyMainWindow(QMainWindow):
 		self.__LabInfo.setText('选择字体名称: ')
 		self.ui.statusBar.addPermanentWidget(self.__LabInfo)
 
-		actionGroup = QActionGroup(self)
-		actionGroup.addAction(self.ui.actLang_CN)
+		actionGroup = QActionGroup(self)#定义一个组
+		actionGroup.addAction(self.ui.actLang_CN)#添加两个组件到一个组内
 		actionGroup.addAction(self.ui.actLang_EN)
-		actionGroup.setExclusive(True)
-		self.ui.actLang_CN.setChecked(True)
+		actionGroup.setExclusive(True)#令组内组件互斥
+		self.ui.actLang_CN.setChecked(True)#设定中文按钮为默认
 
-		self.__spinFontSize = QSpinBox(self)
-		self.__spinFontSize.setMaximum(50)
-		self.__spinFontSize.setMinimum(5)
+		self.__spinFontSize = QSpinBox(self)#设定QSpinBox组件控制字体大小
+		self.__spinFontSize.setMaximum(50)#最大字体50
+		self.__spinFontSize.setMinimum(5)#最小字体5
 		sz = self.ui.textEdit.font().pointSize()
 		self.__spinFontSize.setValue(sz)
 		self.__spinFontSize.setMinimumWidth(50)
@@ -61,6 +62,31 @@ class QmyMainWindow(QMainWindow):
 	##==========事件处理函数===========
 
 	##==========由connectSlotsByName()自动关联的槽函数====
+	@pyqtSlot(bool)
+	def on_actFont_Bold_triggered(self,checked):
+		fmt = self.ui.textEdit.currentCharFormat()
+		# print(fmt,dir(fmt))
+		# print(checked)
+		# if (checked==True):
+		# 	fmt.setFontWeight(QFont.Bold)
+		# else:
+		# 	fmt.setFontWeight(QFont.Normal)
+		# self.ui.textEdit.mergeCurrentCharFormat(fmt)
+		fmt.setFontBold(checked)
+		self.ui.textEdit.currentCharFormat(fmt)
+
+	@pyqtSlot(bool)
+	def on_actFont_Italic_triggered(self,checked):
+		fmt = self.ui.textEdit.currentCharFormat()
+		fmt.setFontItalic(checked)
+		self.ui.textEdit.mergeCurrentCharFormat(fmt)
+
+	@pyqtSlot(bool)
+	def on_actFont_UnderLine_triggered(self,checked):
+		fmt = self.ui.textEdit.currentCharFormat()
+		fmt.setFontUnderline(checked)
+		self.ui.textEdit.mergeCurrentCharFormat(fmt)
+
 
 	##=========自定义槽函数============
 	@pyqtSlot(int)
@@ -76,6 +102,7 @@ class QmyMainWindow(QMainWindow):
 		fmt.setFontFamily(fontName)
 		self.ui.textEdit.mergeCurrentCharFormat(fmt)
 		self.__LabInfo.setText("字体名称: {}".format(fontName))
+
 	##===========窗体测试程序==========
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
