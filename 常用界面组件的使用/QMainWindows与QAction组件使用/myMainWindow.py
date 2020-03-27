@@ -65,15 +65,19 @@ class QmyMainWindow(QMainWindow):
 	@pyqtSlot(bool)
 	def on_actFont_Bold_triggered(self,checked):
 		fmt = self.ui.textEdit.currentCharFormat()
+		print(fmt.fontWeight())
 		# print(fmt,dir(fmt))
 		# print(checked)
-		# if (checked==True):
-		# 	fmt.setFontWeight(QFont.Bold)
-		# else:
-		# 	fmt.setFontWeight(QFont.Normal)
-		# self.ui.textEdit.mergeCurrentCharFormat(fmt)
-		fmt.setFontBold(checked)
-		self.ui.textEdit.currentCharFormat(fmt)
+		if (checked==True):
+			# print(QFont.setItalic())
+			fmt.setFontWeight(QFont.Bold)
+			print(fmt.fontWeight())
+		else:
+			fmt.setFontWeight(QFont.Normal)
+			print(fmt.fontWeight())
+		self.ui.textEdit.mergeCurrentCharFormat(fmt)
+		# fmt.setFontBold(checked)
+		# self.ui.textEdit.currentCharFormat(fmt)
 
 	@pyqtSlot(bool)
 	def on_actFont_Italic_triggered(self,checked):
@@ -87,7 +91,20 @@ class QmyMainWindow(QMainWindow):
 		fmt.setFontUnderline(checked)
 		self.ui.textEdit.mergeCurrentCharFormat(fmt)
 
+	def on_textEdit_copyAvailable(self,avi):
+		self.ui.actEdit_Cut.setEnabled(avi)
+		self.ui.actEdit_Copy.setEnabled(avi)
+		self.ui.actEdit_Paste.setEnabled(self.ui.textEdit.canPaste())
 
+	def on_textEdit_selectionChanged(self):
+		fmt = self.ui.textEdit.currentCharFormat()
+		self.ui.actFont_Bold.setEnabled(fmt.font().bold())
+		self.ui.actFont_Italic.setEnabled(fmt.fontItalic())
+		self.ui.actFont_UnderLine.setEnabled(fmt.fontUnderline())
+
+	def on_textEdit_custonContextMenuRequested(self,pos):
+		popMenu = self.ui.textEdit.createStandardContextMenu()
+		popMenu.exec(pos)
 	##=========自定义槽函数============
 	@pyqtSlot(int)
 	def do_fontSize_Changed(self,fontSize):
