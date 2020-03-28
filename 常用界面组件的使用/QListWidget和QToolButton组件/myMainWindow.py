@@ -46,20 +46,24 @@ class QmyMainWindow(QMainWindow):
 		menuSelection.addAction(self.ui.actSel_None)
 		menuSelection.addAction(self.ui.actSel_Invs)
 
-
-		#工具栏上的下拉菜单按钮
 		self.ui.mainToolBar.addSeparator()#分割线
+
+		# 工具栏上的下拉菜单按钮
 		self.__btnSelectItems_2 = QToolButton(self)#初始化一个QToolButton按钮
-		# self.__btnSelectItems_2.setPopupMode(QToolButton.InstantPopup)#设置下拉菜单的弹出模式
-		self.__btnSelectItems_2.setPopupMode(QToolButton.MenuButtonPopup)#设置下拉菜单的弹出模式
+		self.__btnSelectItems_2.setPopupMode(QToolButton.InstantPopup)#设置下拉菜单的弹出模式
+		# self.__btnSelectItems_2.setPopupMode(QToolButton.MenuButtonPopup)#设置下拉菜单的弹出模式
 		self.__btnSelectItems_2.setDefaultAction(self.ui.actSelPopMenu)#利用setDefaultAction()函数关联Action
 		self.__btnSelectItems_2.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)#设定图标显示格式
 		self.__btnSelectItems_2.setMenu(menuSelection)#为按钮__btnSelectItems_2 设置下拉菜单
-		# self.__btnSelectItems_2.setMinimumSize(50,10)
+		self.ui.mainToolBar.addWidget(self.__btnSelectItems_2)#将其放入工具栏
 
-		self.ui.mainToolBar.addWidget(self.__btnSelectItems_2)
-		self.ui.mainToolBar.addAction(self.ui.actQuit)
+		self.ui.mainToolBar.addAction(self.ui.actQuit)#设置工具栏中的退出按钮
 
+		#设置listWidget上的 btnSelectItem按钮
+		# self.ui.btnSelectItem.setPopupMode(QToolButton.MenuButtonPopup)#下拉菜单格式已在UI组件中设置
+		self.ui.btnSelectItem.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+		self.ui.btnSelectItem.setDefaultAction(self.ui.actSelPopMenu)
+		self.ui.btnSelectItem.setMenu(menuSelection)
 
 	##==========事件处理函数===========
 
