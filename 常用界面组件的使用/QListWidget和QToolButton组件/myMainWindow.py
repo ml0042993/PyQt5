@@ -1,7 +1,7 @@
 import sys
-from PyQt5.QtWidgets import QApplication,QMainWindow,QToolButton,QMenu
+from PyQt5.QtWidgets import QApplication,QMainWindow,QToolButton,QMenu,QListWidgetItem
 from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt
-# from PyQt5.QtGui import
+from PyQt5.QtGui import QIcon
 # from PyQt5.QtWidgets import
 # from PyQt5.QtSql import
 # from PyQt5.QtMultimedia import
@@ -17,6 +17,14 @@ class QmyMainWindow(QMainWindow):
 
 		self.__setActionsForButton()
 		self.__createSelectionPopMenu()
+		'''
+		Qt.ItemIsSelectable:项可被选择
+		Qt.ItemIsUserCheckable:项可以被复选
+		Qt.ItemIsEnabled:项可以被使用
+		Qt.ItemIsEditable:项可以被编辑
+		'''
+		self.__FlagEditable = (Qt.ItemIsSelectable|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled|Qt.ItemIsEditable)
+		self.__FlagNotEditable = (Qt.ItemIsSelectable|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
 	##==========自定义功能函数==========
 	def __setActionsForButton(self):
 		'''
@@ -68,7 +76,71 @@ class QmyMainWindow(QMainWindow):
 	##==========事件处理函数===========
 
 	##==========由connectSlotsByName()自动关联的槽函数====
+	@pyqtSlot()
+	def on_actList_Ini_triggered(self):
+		'''
+		初始化，为控件内添加若干QListWidgetItem类型的对象
+		:return:
+		'''
+		icon = QIcon(":/icons/images/724.bmp")
+		editable = self.ui.chkBoxList_Editable.isChecked()#拿到可编辑的复选框的状态，通过该状态初始化列表
+		if editable == True:
+			Flag = self.__FlagEditable#按照init内的设置可以修改名称
+		else:
+			Flag = self.__FlagNotEditable#不可以设置名称
+		self.ui.listWidget.clear()#清除listWidget内的列表框
+		for i in range(10):
+			itemStr = 'Item %d'%i
+			aItem = QListWidgetItem()#添加的项每一个都是QListWidgetItem类型的对象
+			aItem.setText(itemStr)#设置名称
+			aItem.setIcon(icon)#添加图标
+			'''
+			setCheckState:共三种状态
+			1.Unchecked 			0 	未选中
+			2.PartiallyChecked 		1	部分选中，当数据分层次是，下层数据有部分选中，部分未选中，则为该状态
+			3.Checked				2	选中
+			'''
+			aItem.setCheckState(Qt.Checked)#设置为选中状态
+			aItem.setFlags(Flag)#按照Flag状态设置项(aItem)
+			self.ui.listWidget.addItem(aItem)#将项放入ListWidget中
 
+	@pyqtSlot()
+	def on_actList_Insert_triggered(self):
+		'''
+		插入项
+		插入项使用insertItem()函数，有两种函数原型：
+		1.insertItem(self,row,itemText),在第row行前插入项，项的标题有itemText决定，无法设置项的属性
+		2.insertItem(self,row,item)，在第row行前插入项，项需要提前设定，可以设定项的属性
+		如果需要在最后一行插入，可以直接使用addItem()函数
+		:return:
+		'''
+		icon = QIcon(':/icons/images/724.bmp')
+		editable = self.ui.chkBoxList_Editable.isChecked()
+		if	editable == True:
+			Flag = self.__FlagEditable
+		else:
+			Flag = self.__FlagNotEditable
+		aItem = QListWidgetItem()#添加的项每一个都是QListWidgetItem类型的对象
+		aItem.setText('Inserted Item')
+		aItem.setIcon(icon)
+		aItem.setCheckState(Qt.Checked)
+		aItem.setFlags(Flag)
+		curRow = self.ui.listWidget.currentRow()#当前行，值为-1，int类型
+
+		self.ui.listWidget.insertItem(curRow,aItem)#在第一行插入
+		# self.ui.listWidget.addItem(aItem)#在最后一行插入
+
+	@pyqtSlot()
+	def on_actList_Delete_triggered(self):
+		'''
+		删除项
+		:return:
+		'''
+		row = self.ui.listWidget.currentRow()#当前行
+		self.ui.listWidget.takeItem(row)#删除当前项
+	@pyqtSlot()
+	def on_actList_Clear_triggered(self):
+		self.ui.listWidget.clear()#清空类别项
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========

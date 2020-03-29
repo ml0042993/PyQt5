@@ -10,5 +10,6 @@
         <file>images/delete1.bmp</file>
         <file>images/exit.bmp</file>
         <file>images/128.bmp</file>
+        <file>images/724.bmp</file>
     </qresource>
 </RCC>
