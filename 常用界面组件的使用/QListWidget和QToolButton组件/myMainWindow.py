@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication,QMainWindow,QToolButton,QMenu,QListWidgetItem
-from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt
+from PyQt5.QtCore import pyqtSlot,Qt
 from PyQt5.QtGui import QIcon
 # from PyQt5.QtWidgets import
 # from PyQt5.QtSql import
@@ -141,6 +141,9 @@ class QmyMainWindow(QMainWindow):
 	@pyqtSlot()
 	def on_actList_Clear_triggered(self):
 		self.ui.listWidget.clear()#清空类别项
+	'''
+	为Action绑定逻辑
+	'''
 	@pyqtSlot()
 	def on_actSel_All_triggered(self):#全选
 		# print(self.ui.listWidget.count())
@@ -162,6 +165,24 @@ class QmyMainWindow(QMainWindow):
 				aItem.setCheckState(Qt.Checked)
 			else:
 				aItem.setCheckState(Qt.Unchecked)
+
+	def on_listWidget_currentItemChanged(self,current,previous):
+		'''
+		QListWidget在当前项切换时发射两个信号:
+		1.currentRowChanged(int):传递当前项的行号作为参数
+		2.currentRowChanged(current,previous):两个参数都是QListWidgetItem对象
+		当内容发生变化时发射信号currentTextChanged(str)
+		:param current: 当前项
+		:param previous: 前一项
+		:return:
+		'''
+		strInfo=""
+		if current != None:
+			if previous ==None:
+				strInfo = "当前:" + current.text()
+			else:
+				strInfo = "前一项: " + previous.text() + "; 当前项" + current.text()
+		self.ui.editCurItemText.setText(strInfo)
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
