@@ -141,6 +141,27 @@ class QmyMainWindow(QMainWindow):
 	@pyqtSlot()
 	def on_actList_Clear_triggered(self):
 		self.ui.listWidget.clear()#清空类别项
+	@pyqtSlot()
+	def on_actSel_All_triggered(self):#全选
+		# print(self.ui.listWidget.count())
+		for i in range(self.ui.listWidget.count()):
+			aItem = self.ui.listWidget.item(i)
+			aItem.setCheckState(Qt.Checked)
+		# self.ui.listWidget.selectAll()
+	@pyqtSlot()
+	def on_actSel_None_triggered(self):#全不选
+		for i in range(self.ui.listWidget.count()):
+			aItem = self.ui.listWidget.item(i)
+			aItem.setCheckState(Qt.Unchecked)
+
+	@pyqtSlot()
+	def on_actSel_Invs_triggered(self):#反选
+		for i in range(self.ui.listWidget.count()):
+			aItem = self.ui.listWidget.item(i)
+			if aItem.checkState() != Qt.Checked:
+				aItem.setCheckState(Qt.Checked)
+			else:
+				aItem.setCheckState(Qt.Unchecked)
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
