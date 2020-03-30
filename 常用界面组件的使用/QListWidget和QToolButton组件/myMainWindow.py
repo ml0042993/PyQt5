@@ -189,7 +189,7 @@ class QmyMainWindow(QMainWindow):
 	def on_listWidget_customContextMenuRequested(self,pos):
 		'''
 		设置右键菜单
-		:param pos:
+
 		:return:
 		'''
 		menuList = QMenu(self)#创建菜单
