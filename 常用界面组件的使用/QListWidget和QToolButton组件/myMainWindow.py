@@ -15,6 +15,8 @@ class QmyMainWindow(QMainWindow):
 		self.ui = Ui_MainWindow()#创建Ui对象
 		self.ui.setupUi(self)#构造UI
 
+		self.setCentralWidget(self.ui.splitter)
+
 		self.__setActionsForButton()
 		self.__createSelectionPopMenu()
 		'''
