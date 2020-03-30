@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>images/414.bmp</file>
+        <file>images/416.bmp</file>
+        <file>images/418.bmp</file>
+        <file>images/424.bmp</file>
+        <file>images/426.bmp</file>
+        <file>images/814.bmp</file>
+        <file>images/824.bmp</file>
+        <file>images/delete1.bmp</file>
+        <file>images/exit.bmp</file>
+        <file>images/fold.bmp</file>
+        <file>images/open3.bmp</file>
+    </qresource>
+</RCC>
