@@ -11,6 +11,12 @@ from enum import Enum#枚举类型
 from ui_MainWindow import Ui_MainWindow
 
 class TreeItemType(Enum):#设定节点类型的枚举类型
+	'''
+	QTreeWidgetItem(type: int = QTreeWidgetItem.Type)
+	其类型为枚举类型QTreeWidgetItem.ItemType，树型部件中的标准QTreeWidgetItem项对应的取值为QTreeWidgetItem.Type（对应整数0），
+	如果开发者需要从QTreeWidgetItem派生自定义项，则需要使用项的Type值大于等于QTreeWidgetItem.UserType（对应整型1000）的值，
+	使用不同的type值的目的是为了提供给开发者对自定义项进行诸如排序等特殊处理
+	'''
 	itTopItem = 1001    #顶层节点
 	itGroupItem = 1002  #分组节点
 	itImageItem =1003   #图片文件节点
