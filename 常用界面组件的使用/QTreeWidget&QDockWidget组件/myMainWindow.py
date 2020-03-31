@@ -1,6 +1,6 @@
 import sys
-from PyQt5.QtWidgets import QApplication,QMainWindow,QDockWidget,QTreeWidgetItem
-from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt
+from PyQt5.QtWidgets import QApplication,QMainWindow,QDockWidget,QTreeWidgetItem,QFileDialog
+from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt,QDir
 from PyQt5.QtGui import QPixmap,QIcon
 from enum import Enum#枚举类型
 # from PyQt5.QtWidgets import
@@ -91,6 +91,34 @@ class QmyMainWindow(QMainWindow):
 	##==========事件处理函数===========
 
 	##==========由connectSlotsByName()自动关联的槽函数====
+
+	@pyqtSlot()
+	def on_actTree_AddFolder_triggered(self):
+		dirStr = QFileDialog.getExistingDirectory()#选择需要添加的目录，值是选择的文件夹的路径
+
+		if dirStr == "":#是否选择路径
+			return
+		parItem = self.ui.treeFiles.currentItem()#获得当前节点,<PyQt5.QtWidgets.QTreeWidgetItem object
+		print(parItem.type())
+		if parItem == None:
+			parItem = self.ui.treeFiles.topLevelItem(0)
+			print(parItem)
+		icon = QIcon(":/icons/images/open3.bmp")
+
+		dirObj = QDir(dirStr)
+		nodeText = dirObj.dirName()#最后一级目录的名称
+		print(nodeText)
+		item = QTreeWidgetItem(TreeItemType.itGroupItem.value)
+		item.setFlags(self.itemFlags)
+		item.setIcon(TreeColNum.colItem.value,icon)
+		item.setText(TreeColNum.colItem.value,nodeText)
+		item.setText(TreeColNum.colItemType.value,"Group")
+		item.setCheckState(TreeColNum.colItem.value,Qt.Checked)
+		item.setData(TreeColNum.colItem.value,Qt.UserRole,dirStr)
+
+		parItem.addChild(item)
+		parItem.setExpanded(True)
+
 
 	##=========自定义槽函数============
 
