@@ -1,7 +1,7 @@
 import sys
-from PyQt5.QtWidgets import QApplication,QMainWindow,QDockWidget
+from PyQt5.QtWidgets import QApplication,QMainWindow,QDockWidget,QTreeWidgetItem
 from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QPixmap,QIcon
 from enum import Enum#枚举类型
 # from PyQt5.QtWidgets import
 # from PyQt5.QtSql import
@@ -56,6 +56,32 @@ class QmyMainWindow(QMainWindow):
 
 	##==========自定义功能函数==========
 
+	def __iniTree(self):
+		'''
+		初始化目录树
+		QTreeWidget的每个节点是一个QTreeWidgetItem类对象,添加一个节点需要先创建节点
+		:return:
+		'''
+		self.ui.treeFiles.clear()
+		icon = QIcon(':/icons/images/15.ico')
+
+		item = QTreeWidgetItem(TreeItemType.itTopItem.value)#创建节点
+		'''
+		setIcon()/setText()为节点的某一列设置图标和文件,需要传递一个列号作为参数,TreeColNum.colItem.value的值为0,表示目录树的第一列
+		'''
+		item.setIcon(TreeColNum.colItem.value,icon)
+		item.setText(TreeColNum.colItem.value,"图片文件")
+
+		item.setFlags(self.itemFlags)#设置节点属性
+		item.setCheckState(TreeColNum.colItem.value,Qt.Checked)#设置勾选状态,状态有三种,包括部分勾选
+		'''
+		setData():为节点的某一列设置一个角色数据,原型为setData(self,column,role,value)
+		column:列号
+		role:角色的值
+		value:任意类型的数据
+		'''
+		item.setData(TreeColNum.colItem.value,Qt.UserRole,"")
+		self.ui.treeFiles.addTopLevelItem(item)#将设置完成的节点作为顶层节点添加到目录树
 	##==========事件处理函数===========
 
 	##==========由connectSlotsByName()自动关联的槽函数====
