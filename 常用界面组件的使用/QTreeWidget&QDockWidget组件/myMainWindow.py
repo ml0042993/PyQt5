@@ -204,6 +204,26 @@ class QmyMainWindow(QMainWindow):
 		item = self.ui.treeFiles.currentItem()#获取当前节点
 		parItem = item.parent()#获取当前节点的父节点
 		parItem.removeChild(item)#在父节点上移除子节点
+
+	@pyqtSlot()
+	def on_actTree_ScanItems_triggered(self):
+		'''
+		节点的遍历
+		:return:
+		'''
+		count = self.ui.treeFiles.topLevelItemCount()#统计有多少顶层节点
+		# print(count)
+		for i in range(count):
+			# print(i)
+			item = self.ui.treeFiles.topLevelItem(i)
+			self.__changeItemCaption(item)
+	def __changeItemCaption(self,item):
+		title = "*" + item.text(TreeColNum.colItem.value)#取选择的当前节点的第一列的名称并在前面加上*
+		item.setText(TreeColNum.colItem.value,title)#设置新名称
+		if item.childCount()>0:#如果当前节点下面有子节点
+			print(item.childCount())
+			for i in range(item.childCount()):
+				self.__changeItemCaption(item.child(i))#item.child(i)当前节点的子节点
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
