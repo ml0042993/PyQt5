@@ -174,6 +174,12 @@ class QmyMainWindow(QMainWindow):
 			parItem.addChild(item)
 		parItem.setExpanded(True)
 	def on_treeFiles_currentItemChanged(self,current,previous):
+		'''
+		目录树上当前节点发生变化时,会发射currentItemChanged()信号
+		:param current: 当前节点
+		:param previous: 前一个节点
+		:return:
+		'''
 		if current == None:
 			return
 		nodeType = current.type()#获取当前节点的值
