@@ -195,7 +195,11 @@ class QmyMainWindow(QMainWindow):
 			self.ui.actTree_AddFiles.setEnabled(True)#能添加文件
 			self.ui.actTree_AddFolder.setEnabled(False)#不能能添加文件夹
 			self.ui.actTree_DeleteItem.setEnabled(True)#能删除
-
+	@pyqtSlot()
+	def on_actTree_DeleteItem_triggered(self):
+		item = self.ui.treeFiles.currentItem()
+		parItem = item.parent()
+		parItem.removeChild(item)
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
