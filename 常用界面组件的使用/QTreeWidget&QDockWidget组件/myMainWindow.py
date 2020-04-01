@@ -197,9 +197,13 @@ class QmyMainWindow(QMainWindow):
 			self.ui.actTree_DeleteItem.setEnabled(True)#能删除
 	@pyqtSlot()
 	def on_actTree_DeleteItem_triggered(self):
-		item = self.ui.treeFiles.currentItem()
-		parItem = item.parent()
-		parItem.removeChild(item)
+		'''
+		节点不能移除自己,需要获取其父节点,再通过父节点的removeChild()方法来移除
+		:return:
+		'''
+		item = self.ui.treeFiles.currentItem()#获取当前节点
+		parItem = item.parent()#获取当前节点的父节点
+		parItem.removeChild(item)#在父节点上移除子节点
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
