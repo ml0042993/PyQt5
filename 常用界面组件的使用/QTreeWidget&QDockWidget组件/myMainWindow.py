@@ -297,6 +297,28 @@ class QmyMainWindow(QMainWindow):
 			print(item.childCount())
 			for i in range(item.childCount()):
 				self.__changeItemCaption(item.child(i))#item.child(i)当前节点的子节点
+
+	@pyqtSlot(bool)
+	def on_actDockFloat_triggered(self,checked):
+		'''
+		QDockWidget的操作
+		设置浮动性
+		:param checked:
+		:return:
+		'''
+		self.ui.dockWidget.setFloating(checked)
+
+	@pyqtSlot(bool)
+	def on_actDockVisible_triggered(self,checked):#设置停靠区可见
+		self.ui.dockWidget.setVisible(checked)
+
+	@pyqtSlot(bool)
+	def on_dockWidget_topLevelChanged(self,topLevel):
+		self.ui.actDockFloat.setChecked(topLevel)
+
+	@pyqtSlot(bool)
+	def on_dockWidget_visibilityChanged(self,visible):
+		self.ui.actDockVisible.setChecked(visible)
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
