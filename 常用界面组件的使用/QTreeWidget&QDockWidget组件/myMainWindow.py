@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication,QMainWindow,QDockWidget,QTreeWidgetItem,QFileDialog
-from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt,QDir
+from PyQt5.QtCore import pyqtSlot,Qt,QDir,QFileInfo
 from PyQt5.QtGui import QPixmap,QIcon
 from enum import Enum#枚举类型
 # from PyQt5.QtWidgets import
@@ -133,6 +133,46 @@ class QmyMainWindow(QMainWindow):
 		parItem.addChild(item)#添加子节点
 		parItem.setExpanded(True)#展开模式
 
+	def on_actTree_AddFiles_triggered(self):
+		'''
+		fileList:列表,内部是选择的文件路径
+		fit:选择的格式
+		:return:
+		'''
+		fileList,fit = QFileDialog.getOpenFileNames(self,"选择一个或多个文件",'','Images(*.jpg)')
+		print(fileList,fit)
+		if len(fileList)<1:
+			return
+		item = self.ui.treeFiles.currentItem()
+		# print(item.type())
+		try:
+			if item.type() == TreeItemType.itImageItem.value:#1003
+				parItem = item.parent()#如果选中的是1003的节点则,将当前节点设置为1002节点,然后在最后将文件添加在1002节点下的子节点中即addchild()
+				print(parItem.type(),"1003")
+			else:parItem = item#如果不是1003则将当前节点设置为选中节点,再在最后添加到其下的子节点中
+		except AttributeError as e:#item有可能未选中任何节点
+			# print(e)
+			parItem = self.ui.treeFiles.topLevelItem(0)#如果是未选中任何一个则,设置默认选中顶层节点
+
+		icon = QIcon(':/icons/images/31.ico')
+		for i in range(len(fileList)):
+			fullFileName = fileList[i]#带路径的文件名
+			fileInfo = QFileInfo(fullFileName)
+			nodeText = fileInfo.fileName()#从路径得到文件的名称
+
+			item = QTreeWidgetItem(TreeItemType.itImageItem.value)
+
+			item.setIcon(TreeColNum.colItem.value,icon)
+			item.setText(TreeColNum.colItem.value,nodeText)#添加名称在在一列
+			item.setText(TreeColNum.colItemType.value,'Image')
+
+			item.setFlags(self.itemFlags)#设置选择属性
+
+			item.setCheckState(TreeColNum.colItem.value,Qt.Checked)#添加当前状态
+			item.setData(TreeColNum.colItem.value,Qt.UserRole,fullFileName)
+
+			parItem.addChild(item)
+		parItem.setExpanded(True)
 
 	##=========自定义槽函数============
 

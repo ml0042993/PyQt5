@@ -12,5 +12,6 @@
         <file>images/fold.bmp</file>
         <file>images/open3.bmp</file>
         <file>images/15.ico</file>
+        <file>images/31.ico</file>
     </qresource>
 </RCC>
