@@ -135,6 +135,7 @@ class QmyMainWindow(QMainWindow):
 	@pyqtSlot()#如果不加入修饰符,则在添加文件时会弹两次选择添加文件的选择框,原因未知
 	def on_actTree_AddFiles_triggered(self):
 		'''
+		设置图片节点
 		fileList:列表,内部是选择的文件路径
 		fit:选择的格式
 		:return:
@@ -195,6 +196,78 @@ class QmyMainWindow(QMainWindow):
 			self.ui.actTree_AddFiles.setEnabled(True)#能添加文件
 			self.ui.actTree_AddFolder.setEnabled(False)#不能能添加文件夹
 			self.ui.actTree_DeleteItem.setEnabled(True)#能删除
+			self.__displayImage(current)
+	def __displayImage(self,item):
+		'''
+		显示节点关联的图片
+		QTreeWidgetItem.data()函数返回节点存储的数据,即是用setData()设置的数据,
+		item.setData(TreeColNum.colItem.value,Qt.UserRole,fullFileName)在设置时将带文件的路径名存储为节点数据
+		通过filename = item.data(TreeColNum.colItem.value,Qt.UserRole),可以取到该路径
+		:param item:是一个QTreeWidgetItem类型
+		:return:
+		'''
+		filename = item.data(TreeColNum.colItem.value,Qt.UserRole)
+		self.ui.statusBar.showMessage(filename)#设置状态栏显示路径
+		self.curPixmap.load(filename)
+		self.on_actZoomFitH_triggered()#设置默认为适应高度显示图片
+		self.ui.actZoomFitH.setEnabled(True)
+		self.ui.actZoomFitW.setEnabled(True)
+		self.ui.actZoomIn.setEnabled(True)
+		self.ui.actZoomOut.setEnabled(True)
+		self.ui.actZoomRealSize.setEnabled(True)
+
+	@pyqtSlot()
+	def on_actZoomFitH_triggered(self):
+		'''
+		适应高度的显示方式
+		:return:
+		'''
+		H = self.ui.scrollArea.height()#显示图片的组件的高度
+		realH = self.curPixmap.height()#图片真实的高度
+		self.pixRatio = float(H)/realH#当前显示的比例
+		pix = self.curPixmap.scaledToHeight(H-30)#图片缩放到指定高度
+		self.ui.LabPicture.setPixmap(pix)
+
+	@pyqtSlot()
+	def on_actZoomFitW_triggered(self):
+		'''
+		适应宽度的显示方式
+		:return:
+		'''
+		W = self.ui.scrollArea.width()
+		realW = self.curPixmap.width()
+		self.pixRatio = float(W)/realW
+		pix = self.curPixmap.scaledToWidth(W-30)
+		self.ui.LabPicture.setPixmap(pix)
+
+	@pyqtSlot()
+	def on_actZoomIn_triggered(self):
+		'''
+		放大图片
+		:return:
+		'''
+		self.pixRatio = self.pixRation*1.2
+		W = self.pixRatio*self.curPixmap.width()
+		H = self.pixRatio*self.curPixmap.height()
+		pix = self.curPixmap.scaled(W,H)
+		self.ui.LabPicture.setPixmap(pix)
+	@pyqtSlot()
+	def on_actZoomOut_triggered(self):
+		'''
+		缩小图片
+		:return:
+		'''
+		self.pixRatio = self.pixRation*0.8
+		W = self.pixRatio*self.curPixmap.width()
+		H = self.pixRatio*self.curPixmap.height()
+		pix = self.curPixmap.scaled(W,H)
+		self.ui.LabPicture.setPixmap(pix)
+
+	@pyqtSlot()
+	def on_actZoomRealSize_triggered(self):
+		self.pixRatio = 1
+		self.ui.LabPicture.setPixmap(self.curPixmap)
+
 	@pyqtSlot()
 	def on_actTree_DeleteItem_triggered(self):
 		'''
