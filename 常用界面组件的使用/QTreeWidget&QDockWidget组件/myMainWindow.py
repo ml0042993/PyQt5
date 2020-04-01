@@ -73,7 +73,8 @@ class QmyMainWindow(QMainWindow):
 
 		item = QTreeWidgetItem(TreeItemType.itTopItem.value)#创建节点
 		'''
-		setIcon()/setText()为节点的某一列设置图标和文件,需要传递一个列号作为参数,TreeColNum.colItem.value的值为0,表示目录树的第一列
+		setIcon()/setText()为节点的某一列设置图标和文件,需要传递一个列号作为参数,
+		TreeColNum.colItem.value的值为0,表示目录树的第一列
 		'''
 		item.setIcon(TreeColNum.colItem.value,icon)
 		item.setText(TreeColNum.colItem.value,"图片文件")
@@ -94,30 +95,43 @@ class QmyMainWindow(QMainWindow):
 
 	@pyqtSlot()
 	def on_actTree_AddFolder_triggered(self):
+		'''
+		向顶层节点内添加分组节点,分组节点的具体方式是文件夹
+		:return:
+		'''
 		dirStr = QFileDialog.getExistingDirectory()#选择需要添加的目录，值是选择的文件夹的路径
 
-		if dirStr == "":#是否选择路径
-			return
-		parItem = self.ui.treeFiles.currentItem()#获得当前节点,<PyQt5.QtWidgets.QTreeWidgetItem object
-		print(parItem.type())
-		if parItem == None:
-			parItem = self.ui.treeFiles.topLevelItem(0)
-			print(parItem)
+		# if dirStr == "":#是否选择路径,如果没有选中则系统默认选中程序所在的根目录
+		# 	return#从程序运行结果来看,该语句多余
+		parItem = self.ui.treeFiles.currentItem()#获得当前节点(选中的节点),选中则是PyQt5.QtWidgets.QTreeWidgetItem类型,未选中则为None
+
+		if parItem == None:#如果没有选中节点,即鼠标未点击界面中的目录层级,则令程序选中最顶层节点
+			parItem = self.ui.treeFiles.topLevelItem(0)#1001
+
+
 		icon = QIcon(":/icons/images/open3.bmp")
 
 		dirObj = QDir(dirStr)
 		nodeText = dirObj.dirName()#最后一级目录的名称
-		print(nodeText)
+		'''
 		item = QTreeWidgetItem(TreeItemType.itGroupItem.value)
-		item.setFlags(self.itemFlags)
-		item.setIcon(TreeColNum.colItem.value,icon)
-		item.setText(TreeColNum.colItem.value,nodeText)
-		item.setText(TreeColNum.colItemType.value,"Group")
-		item.setCheckState(TreeColNum.colItem.value,Qt.Checked)
+		参数值为1002,即添加的是一个分组节点,这样设置的结果会导致在顶层节点下添加节点时,
+		无论选中哪一级的节点添加的都是1002参数的分组节点,即全部都是文件夹类型
+		
+		item = QTreeWidgetItem(parItem.type()+1)
+		'''
+		item = QTreeWidgetItem(TreeItemType.itGroupItem.value)
+
+		item.setFlags(self.itemFlags)#设置状态
+		item.setIcon(TreeColNum.colItem.value,icon)#给节点列(第一列)添加图标
+		item.setIcon(TreeColNum.colItemType.value,icon)#给节点列(第一列)添加图标
+		item.setText(TreeColNum.colItem.value,nodeText)#给节点列添加名称
+		item.setText(TreeColNum.colItemType.value,"Group")#给节点类型列添加名称
+		item.setCheckState(TreeColNum.colItem.value,Qt.Checked)#添加一个多选框
 		item.setData(TreeColNum.colItem.value,Qt.UserRole,dirStr)
 
-		parItem.addChild(item)
-		parItem.setExpanded(True)
+		parItem.addChild(item)#添加子节点
+		parItem.setExpanded(True)#展开模式
 
 
 	##=========自定义槽函数============
