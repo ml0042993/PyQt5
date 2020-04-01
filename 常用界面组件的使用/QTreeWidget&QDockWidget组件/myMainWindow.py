@@ -132,7 +132,7 @@ class QmyMainWindow(QMainWindow):
 
 		parItem.addChild(item)#添加子节点
 		parItem.setExpanded(True)#展开模式
-
+	@pyqtSlot()#如果不加入修饰符,则在添加文件时会弹两次选择添加文件的选择框,原因未知
 	def on_actTree_AddFiles_triggered(self):
 		'''
 		fileList:列表,内部是选择的文件路径
@@ -140,7 +140,7 @@ class QmyMainWindow(QMainWindow):
 		:return:
 		'''
 		fileList,fit = QFileDialog.getOpenFileNames(self,"选择一个或多个文件",'','Images(*.jpg)')
-		print(fileList,fit)
+		# print(fileList,fit)
 		if len(fileList)<1:
 			return
 		item = self.ui.treeFiles.currentItem()
@@ -148,7 +148,7 @@ class QmyMainWindow(QMainWindow):
 		try:
 			if item.type() == TreeItemType.itImageItem.value:#1003
 				parItem = item.parent()#如果选中的是1003的节点则,将当前节点设置为1002节点,然后在最后将文件添加在1002节点下的子节点中即addchild()
-				print(parItem.type(),"1003")
+				# print(parItem.type(),"1003")
 			else:parItem = item#如果不是1003则将当前节点设置为选中节点,再在最后添加到其下的子节点中
 		except AttributeError as e:#item有可能未选中任何节点
 			# print(e)
@@ -173,6 +173,22 @@ class QmyMainWindow(QMainWindow):
 
 			parItem.addChild(item)
 		parItem.setExpanded(True)
+	def on_treeFiles_currentItemChanged(self,current,previous):
+		if current == None:
+			return
+		nodeType = current.type()#获取当前节点的值
+		if nodeType == TreeItemType.itTopItem.value:#如果是顶层节点1001
+			self.ui.actTree_AddFiles.setEnabled(True)#能添加文件
+			self.ui.actTree_AddFolder.setEnabled(True)#能添加文件夹
+			self.ui.actTree_DeleteItem.setEnabled(False)#不能删除
+		elif nodeType == TreeItemType.itGroupItem.value:
+			self.ui.actTree_AddFiles.setEnabled(True)#能添加文件
+			self.ui.actTree_AddFolder.setEnabled(True)#能添加文件夹
+			self.ui.actTree_DeleteItem.setEnabled(True)#能删除
+		elif nodeType == TreeItemType.itImageItem.value:
+			self.ui.actTree_AddFiles.setEnabled(True)#能添加文件
+			self.ui.actTree_AddFolder.setEnabled(False)#不能能添加文件夹
+			self.ui.actTree_DeleteItem.setEnabled(True)#能删除
 
 	##=========自定义槽函数============
 
