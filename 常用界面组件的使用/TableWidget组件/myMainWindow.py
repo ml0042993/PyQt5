@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication,QMainWindow,QLabel,QTableWidgetItem
+from PyQt5.QtWidgets import QApplication,QMainWindow,QLabel,QTableWidgetItem,QAbstractItemView
 from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt,QDate
 from enum import Enum
 from PyQt5.QtGui import QBrush,QIcon
@@ -247,6 +247,83 @@ class QmyMainWindow(QMainWindow):
 		:return:
 		'''
 		self.ui.tableInfo.resizeColumnsToContents()
+
+	@pyqtSlot(bool)
+	def on_chkBoxEditable_clicked(self,checked):
+		'''
+		是否可编辑
+		:param checked:
+		:return:
+		'''
+		if checked:
+			trig = QAbstractItemView.DoubleClicked | QAbstractItemView.SelectedClicked
+		else:
+			trig = QAbstractItemView.NoEditTriggers
+		self.ui.tableInfo.setEditTriggers(trig)
+
+	@pyqtSlot(bool)
+	def on_chkBoxHeaderH_clicked(self,checked):
+		'''
+		是否显示行表头
+		:param checked:
+		:return:
+		'''
+		self.ui.tableInfo.horizontalHeader().setVisible(checked)
+	@pyqtSlot(bool)
+	def on_chkBoxHeaderV_clicked(self,checked):
+		'''
+		是否显示列表头
+		:param checked:
+		:return:
+		'''
+		self.ui.tableInfo.verticalHeader().setVisible(checked)
+	@pyqtSlot(bool)
+	def on_chkBoxRowColor_clicked(self,checked):
+		'''
+		间隔行底色
+		:param checked:
+		:return:
+		'''
+		self.ui.tableInfo.setAlternatingRowColors(checked)
+	@pyqtSlot()
+	def on_radioSelectRow_clicked(self):
+		'''
+		行选择方式
+		setSelectionBehavior(behavior)设置单元格的选择方式，参数是枚举型QAbstractItemView.SelectBehavior，共有三种模式
+		QAbstractItemView.SelectRows：行选择
+		QAbstractItemView.SelectItems:单元格
+		QAbstractItemView.SelectColumns:列选择
+		:return:
+		'''
+		selMode = QAbstractItemView.SelectRows#选择取值方式
+		self.ui.tableInfo.setSelectionBehavior(selMode)
+
+	@pyqtSlot()
+	def on_radioSelectItem_clicked(self):
+		'''
+		单元格选择模式
+		:return:
+		'''
+		selMode = QAbstractItemView.SelectItems#选择取值方式
+		self.ui.tableInfo.setSelectionBehavior(selMode)
+
+	@pyqtSlot()
+	def on_btnReadToText_clicked(self):
+		self.ui.textEdit.clear()
+		rowCount = self.ui.tableInfo.rowCount()#行总数
+		colCount = self.ui.tableInfo.columnCount()#列总数
+
+		for i in range(rowCount):
+			strText = "第{}行".format(i+1)
+			for j in range(colCount):
+				cellItem = self.ui.tableInfo.item(i,j)
+				strText = strText + cellItem.text() + " "
+			cellItem = self.ui.tableInfo.item(i,colCount-2)#选择特定一列
+			if cellItem.checkState() == Qt.Checked:#查看是否是选中状态
+				strText = strText + "党员"
+			else:
+				strText = strText + "群众"
+			self.ui.textEdit.appendPlainText(strText)
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
