@@ -44,7 +44,7 @@ class QmyMainWindow(QMainWindow):
 		self.ui.statusBar.addWidget(self.LabStudID)
 
 		self.ui.tableInfo.setAlternatingRowColors(True)#交替行颜色
-
+		self.ui.chkBoxRowColor.setChecked(True)#设置chkBoxRowColor默认状态为选中
 	##==========自定义功能函数==========
 	@pyqtSlot()
 	def on_btnSetHeader_clicked(self):
@@ -63,6 +63,18 @@ class QmyMainWindow(QMainWindow):
 			headerItem.setForeground(QBrush(Qt.red))#设置单元格前景色,文字颜色
 			#将该单元格设置为第i列的表头
 			self.ui.tableInfo.setHorizontalHeaderItem(i,headerItem)
+	@pyqtSlot()
+	def on_btnSetRows_clicked(self):
+		'''
+		按照spinRowCount的数字设置行数
+		:return:
+		'''
+
+		row = self.ui.spinRowCount.value()#获取行数
+
+		self.ui.tableInfo.setRowCount(row)#设置tableInfo组件的行数
+
+		self.ui.tableInfo.setAlternatingRowColors(self.ui.chkBoxRowColor.isChecked())#设置交替行背景颜色,参数为bool型,当前为True
 
 	##==========事件处理函数===========
 
