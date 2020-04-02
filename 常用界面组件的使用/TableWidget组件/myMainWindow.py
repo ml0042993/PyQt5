@@ -1,8 +1,8 @@
 import sys
-from PyQt5.QtWidgets import QApplication,QMainWindow,QLabel
+from PyQt5.QtWidgets import QApplication,QMainWindow,QLabel,QTableWidgetItem
 from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt
 from enum import Enum
-# from PyQt5.QtGui import
+from PyQt5.QtGui import QBrush
 # from PyQt5.QtWidgets import
 # from PyQt5.QtSql import
 # from PyQt5.QtMultimedia import
@@ -46,6 +46,23 @@ class QmyMainWindow(QMainWindow):
 		self.ui.tableInfo.setAlternatingRowColors(True)#交替行颜色
 
 	##==========自定义功能函数==========
+	@pyqtSlot()
+	def on_btnSetHeader_clicked(self):
+		'''
+		设置表头
+		表内的每个单元格都是一个QTableWidgetItem对象
+		:return:
+		'''
+		headerText = ['姓名','性别','出生日期','民族','分数','是否党员']
+		self.ui.tableInfo.setColumnCount(len(headerText))#设置列数
+		for i in range(len(headerText)):
+			headerItem = QTableWidgetItem(headerText[i])#实例化一个单元格,参数为单元格名称
+			font = headerItem.font()#获取该单元格字体状态
+			font.setPointSize(11)#为字体设置字号
+			headerItem.setFont(font)#将字号大小绑定给该单元格
+			headerItem.setForeground(QBrush(Qt.red))#设置单元格前景色,文字颜色
+			#将该单元格设置为第i列的表头
+			self.ui.tableInfo.setHorizontalHeaderItem(i,headerItem)
 
 	##==========事件处理函数===========
 
