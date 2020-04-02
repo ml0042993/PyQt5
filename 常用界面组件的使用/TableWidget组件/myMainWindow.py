@@ -46,6 +46,56 @@ class QmyMainWindow(QMainWindow):
 		self.ui.tableInfo.setAlternatingRowColors(True)#交替行颜色
 		self.ui.chkBoxRowColor.setChecked(True)#设置chkBoxRowColor默认状态为选中
 	##==========自定义功能函数==========
+	##==========事件处理函数===========
+	def __createItemARow(self,rowNo,name,sex,birth,nation,isParty,score):
+		StudID = 201805000+rowNo
+		#姓名
+		item = QTableWidgetItem(name,CellType.ctName.value)#实例一个有姓名的单元格,
+		item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)#水平+垂直居中
+		font = item.font()
+		font.setBold(True)
+		item.setFont(font)
+		item.setData(Qt.UserRole,StudID)#设置自定义数据,将学生ID存入,该数据不会显示在界面
+		self.ui.tableInfo.setItem(rowNo,FieldColNum.colName.value,item)#第1(0)行1(0)列,设置item单元格
+		#性别
+		if sex == '男':
+			icon = QIcon(":/icons/images/boy.ico")
+		else:
+			icon = QIcon(":/icons/images/girl.ico")
+
+		item = QTableWidgetItem(sex,CellType.ctSex.value)
+		item.setIcon(icon)#设置图标
+		item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		self.ui.tableInfo.setItem(rowNo,FieldColNum.colSex.value,item)
+		#出生日期
+		strBirth = birth.toString('yyyy-MM-dd')
+		item = QTableWidgetItem(strBirth,CellType.ctBirth.value)
+		item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+		self.ui.tableInfo.setItem(rowNo,FieldColNum.colBirth.value,item)
+		#民族
+		item = QTableWidgetItem(nation,CellType.cnNation.value)
+		item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+		if nation != '汉族':
+			item.setForeground(QBrush(Qt.blue))#设置文字颜色为蓝色
+		self.ui.tableInfo.setItem(rowNo,FieldColNum.colNation.value,item)
+		#党员
+		item = QTableWidgetItem("党员",CellType.ctPartyM.value)
+		item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+		if  isParty == True:
+			item.setCheckState(Qt.Checked)#选中
+		else:
+			item.setCheckState(Qt.Unchecked)#不选择
+		item.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled|Qt.ItemIsUserCheckable)#可选,能被选(锁定),可被复选(为True带有复选框)
+		item.setBackground(QBrush(Qt.yellow))
+		self.ui.tableInfo.setItem(rowNo,FieldColNum.colParthM.value,item)
+		#分数
+		strScore = str(score)
+		item = QTableWidgetItem(strScore,CellType.cnScore.value)
+		item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+		self.ui.tableInfo.setItem(rowNo,FieldColNum.colScore.value,item)
+
+
+	##==========由connectSlotsByName()自动关联的槽函数====
 	@pyqtSlot()
 	def on_btnSetHeader_clicked(self):
 		'''
@@ -119,55 +169,42 @@ class QmyMainWindow(QMainWindow):
 		self.__tableInitialized = True
 
 
-	##==========事件处理函数===========
-	def __createItemARow(self,rowNo,name,sex,birth,nation,isParty,score):
-		StudID = 201805000+rowNo
-		#姓名
-		item = QTableWidgetItem(name,CellType.ctName.value)#实例一个有姓名的单元格,
-		item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)#水平+垂直居中
-		font = item.font()
-		font.setBold(True)
-		item.setFont(font)
-		item.setData(Qt.UserRole,StudID)#设置自定义数据,将学生ID存入,该数据不会显示在界面
-		self.ui.tableInfo.setItem(rowNo,FieldColNum.colName.value,item)#第1(0)行1(0)列,设置item单元格
-		#性别
-		if sex == '男':
-			icon = QIcon(":/icons/images/boy.ico")
-		else:
-			icon = QIcon(":/icons/images/girl.ico")
+	@pyqtSlot(int,int,int,int)
+	def on_tableInfo_currentCellChangded(self,currentRow,currentColumn,previousRow,previousColumn):
+		if self.__tableInitialized == False:
+			return
+		item = self.ui.tableInfo.item(currentRow,currentColumn)
+		if item==None:
+			return
 
-		item = QTableWidgetItem(sex,CellType.ctSex.value)
-		item.setIcon(icon)#设置图标
-		item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		self.ui.tableInfo.setItem(rowNo,FieldColNum.colSex.value,item)
-		#出生日期
-		strBirth = birth.toString('yyyy-MM-dd')
-		item = QTableWidgetItem(strBirth,CellType.ctBirth.value)
-		item.setTextAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
-		self.ui.tableInfo.setItem(rowNo,FieldColNum.colBirth.value,item)
-		#民族
-		item = QTableWidgetItem(nation,CellType.cnNation.value)
-		item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-		if nation != '汉族':
-			item.setForeground(QBrush(Qt.blue))#设置文字颜色为蓝色
-		self.ui.tableInfo.setItem(rowNo,FieldColNum.colNation.value,item)
-		#党员
-		item = QTableWidgetItem("党员",CellType.ctPartyM.value)
-		item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-		if  isParty == True:
-			item.setCheckState(Qt.Checked)#选中
-		else:
-			item.setCheckState(Qt.Unchecked)#不选择
-		item.setFlags(Qt.ItemIsSelectable|Qt.ItemIsEnabled|Qt.ItemIsUserCheckable)#可选,能被选(锁定),可被复选(为True带有复选框)
-		item.setBackground(QBrush(Qt.yellow))
-		self.ui.tableInfo.setItem(rowNo,FieldColNum.colParthM.value,item)
-		#分数
-		strScore = str(score)
-		item = QTableWidgetItem(strScore,CellType.cnScore.value)
-		item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-		self.ui.tableInfo.setItem(rowNo,FieldColNum.colScore.value,item)
-	##==========由connectSlotsByName()自动关联的槽函数====
+		self.LabCellIndex.setText("当前单元格: %d行, %d 列" %(currentRow,currentColumn))
+		itemCellType = item.type()
+		self.LabCellType.setText("当前单元格类型: %d"%itemCellType)
 
+		item2 = self.ui.tableInfo.item(currentRow,FieldColNum.colName.value)
+		studID = item2.data(Qt.UserRole)
+		self.LabStudID.setText("学生ID: %d"%studID)
+
+	@pyqtSlot()
+	def on_btnInsertRow_clicked(self):
+		curRow = self.ui.tableInfo.currentRow()
+		self.ui.tableInfo.insertRow(curRow)
+		birth = QDate.fromString("1998-4-5","yyyy-M-d")
+		self.__createItemARow(curRow,"新学生","男",birth,"苗族",True,65)
+
+	@pyqtSlot()
+	def on_btnAppendRow_clicked(self):
+		curRow = self.ui.tableInfo.rowCount()
+		self.ui.tableInfo.insertRow(curRow)
+		birth = QDate.fromString("1999-1-10","yyyy-M-d")
+		self.__createItemARow(curRow,"新生","女",birth,"土家族",False,85)
+	@pyqtSlot()
+	def on_btnDelCurRow_clicked(self):
+		curRow = self.ui.tableInfo.currentRow()
+		self.ui.tableInfo.removeRow(curRow)
+	@pyqtSlot()
+	def on_btnClearContents_clicked(self):
+		self.ui.tableInfo.clearContents()
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
