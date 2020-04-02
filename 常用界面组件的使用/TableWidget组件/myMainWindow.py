@@ -45,6 +45,7 @@ class QmyMainWindow(QMainWindow):
 
 		self.ui.tableInfo.setAlternatingRowColors(True)#交替行颜色
 		self.ui.chkBoxRowColor.setChecked(True)#设置chkBoxRowColor默认状态为选中
+		self.__tableInitialized = False#初始化标识
 	##==========自定义功能函数==========
 	##==========事件处理函数===========
 	def __createItemARow(self,rowNo,name,sex,birth,nation,isParty,score):
@@ -170,40 +171,65 @@ class QmyMainWindow(QMainWindow):
 
 
 	@pyqtSlot(int,int,int,int)
-	def on_tableInfo_currentCellChangded(self,currentRow,currentColumn,previousRow,previousColumn):
-		if self.__tableInitialized == False:
-			return
-		item = self.ui.tableInfo.item(currentRow,currentColumn)
-		if item==None:
-			return
+	def on_tableInfo_currentCellChanged(self,currentRow,currentColumn,previousRow,previousColumn):
+		'''
 
+		:param currentRow: 当前单元格的行号
+		:param currentColumn: 当前单元格的列号
+		:param previousRow: 上一个行号
+		:param previousColumn: 上一个列号
+		:return:
+		'''
+
+		if self.__tableInitialized == False:#判断是否初始化
+			return
+		item = self.ui.tableInfo.item(currentRow,currentColumn)#令item为当前选择的单元格
+		if item==None:#如果未选中
+			return
+		# print(item.type())
 		self.LabCellIndex.setText("当前单元格: %d行, %d 列" %(currentRow,currentColumn))
 		itemCellType = item.type()
 		self.LabCellType.setText("当前单元格类型: %d"%itemCellType)
 
 		item2 = self.ui.tableInfo.item(currentRow,FieldColNum.colName.value)
-		studID = item2.data(Qt.UserRole)
+		studID = item2.data(Qt.UserRole)#取__createItemARow（）函数内由setData封装的单元格用户信息
 		self.LabStudID.setText("学生ID: %d"%studID)
 
 	@pyqtSlot()
 	def on_btnInsertRow_clicked(self):
-		curRow = self.ui.tableInfo.currentRow()
-		self.ui.tableInfo.insertRow(curRow)
+		'''
+		插入行
+		:return:
+		'''
+		curRow = self.ui.tableInfo.currentRow()#获取选中的行号
+		self.ui.tableInfo.insertRow(curRow)#在该行号插入
 		birth = QDate.fromString("1998-4-5","yyyy-M-d")
 		self.__createItemARow(curRow,"新学生","男",birth,"苗族",True,65)
 
 	@pyqtSlot()
 	def on_btnAppendRow_clicked(self):
-		curRow = self.ui.tableInfo.rowCount()
-		self.ui.tableInfo.insertRow(curRow)
+		'''
+		添加行，最后一列
+		:return:
+		'''
+		curRow = self.ui.tableInfo.rowCount()#获取总行数
+		self.ui.tableInfo.insertRow(curRow)#以总行数为参数添加一行列表
 		birth = QDate.fromString("1999-1-10","yyyy-M-d")
 		self.__createItemARow(curRow,"新生","女",birth,"土家族",False,85)
 	@pyqtSlot()
 	def on_btnDelCurRow_clicked(self):
+		'''
+		删除行
+		:return:
+		'''
 		curRow = self.ui.tableInfo.currentRow()
 		self.ui.tableInfo.removeRow(curRow)
 	@pyqtSlot()
 	def on_btnClearContents_clicked(self):
+		'''
+		清空列表，不包括表头
+		:return:
+		'''
 		self.ui.tableInfo.clearContents()
 	##=========自定义槽函数============
 
