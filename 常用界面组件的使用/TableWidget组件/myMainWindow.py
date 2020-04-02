@@ -231,6 +231,22 @@ class QmyMainWindow(QMainWindow):
 		:return:
 		'''
 		self.ui.tableInfo.clearContents()
+
+	@pyqtSlot()
+	def on_btnAutoHeight_clicked(self):
+		'''
+		自动行高
+		:return:
+		'''
+		self.ui.tableInfo.resizeRowsToContents()
+
+	@pyqtSlot()
+	def on_btnAutoWidth_clicked(self):
+		'''
+		自动列宽
+		:return:
+		'''
+		self.ui.tableInfo.resizeColumnsToContents()
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
