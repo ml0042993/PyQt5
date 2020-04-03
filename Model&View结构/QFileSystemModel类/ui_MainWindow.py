@@ -1,0 +1,95 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'MainWindow.ui'
+#
+# Created by: PyQt5 UI code generator 5.13.0
+#
+# WARNING! All changes made in this file will be lost!
+
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+class Ui_MainWindow(object):
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(719, 533)
+        self.centralWidget = QtWidgets.QWidget(MainWindow)
+        self.centralWidget.setToolTipDuration(0)
+        self.centralWidget.setObjectName("centralWidget")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.centralWidget)
+        self.verticalLayout_4.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout_4.setSpacing(6)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.splitter_2 = QtWidgets.QSplitter(self.centralWidget)
+        self.splitter_2.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter_2.setObjectName("splitter_2")
+        self.groupBox = QtWidgets.QGroupBox(self.splitter_2)
+        self.groupBox.setObjectName("groupBox")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.groupBox)
+        self.verticalLayout_3.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout_3.setSpacing(6)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.treeView = QtWidgets.QTreeView(self.groupBox)
+        self.treeView.setObjectName("treeView")
+        self.verticalLayout_3.addWidget(self.treeView)
+        self.splitter = QtWidgets.QSplitter(self.splitter_2)
+        self.splitter.setOrientation(QtCore.Qt.Vertical)
+        self.splitter.setObjectName("splitter")
+        self.groupBox_2 = QtWidgets.QGroupBox(self.splitter)
+        self.groupBox_2.setObjectName("groupBox_2")
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.groupBox_2)
+        self.verticalLayout_2.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout_2.setSpacing(6)
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.listView = QtWidgets.QListView(self.groupBox_2)
+        self.listView.setObjectName("listView")
+        self.verticalLayout_2.addWidget(self.listView)
+        self.groupBox_3 = QtWidgets.QGroupBox(self.splitter)
+        self.groupBox_3.setObjectName("groupBox_3")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.groupBox_3)
+        self.verticalLayout.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.tableView = QtWidgets.QTableView(self.groupBox_3)
+        self.tableView.setObjectName("tableView")
+        self.verticalLayout.addWidget(self.tableView)
+        self.verticalLayout_4.addWidget(self.splitter_2)
+        self.groupBox_4 = QtWidgets.QGroupBox(self.centralWidget)
+        self.groupBox_4.setObjectName("groupBox_4")
+        self.horizontalLayout = QtWidgets.QHBoxLayout(self.groupBox_4)
+        self.horizontalLayout.setContentsMargins(11, 11, 11, 11)
+        self.horizontalLayout.setSpacing(6)
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.LabFileName = QtWidgets.QLabel(self.groupBox_4)
+        self.LabFileName.setObjectName("LabFileName")
+        self.horizontalLayout.addWidget(self.LabFileName)
+        self.LabFileSize = QtWidgets.QLabel(self.groupBox_4)
+        self.LabFileSize.setObjectName("LabFileSize")
+        self.horizontalLayout.addWidget(self.LabFileSize)
+        self.LabType = QtWidgets.QLabel(self.groupBox_4)
+        self.LabType.setObjectName("LabType")
+        self.horizontalLayout.addWidget(self.LabType)
+        self.checkBox = QtWidgets.QCheckBox(self.groupBox_4)
+        self.checkBox.setObjectName("checkBox")
+        self.horizontalLayout.addWidget(self.checkBox)
+        self.verticalLayout_4.addWidget(self.groupBox_4)
+        MainWindow.setCentralWidget(self.centralWidget)
+        self.statusBar = QtWidgets.QStatusBar(MainWindow)
+        self.statusBar.setObjectName("statusBar")
+        MainWindow.setStatusBar(self.statusBar)
+
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def retranslateUi(self, MainWindow):
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.groupBox.setTitle(_translate("MainWindow", "TreeView"))
+        self.groupBox_2.setTitle(_translate("MainWindow", "ListView"))
+        self.groupBox_3.setTitle(_translate("MainWindow", "TableView"))
+        self.groupBox_4.setTitle(_translate("MainWindow", "GroupBox"))
+        self.LabFileName.setText(_translate("MainWindow", "TextLabel"))
+        self.LabFileSize.setText(_translate("MainWindow", "TextLabel"))
+        self.LabType.setText(_translate("MainWindow", "TextLabel"))
+        self.checkBox.setText(_translate("MainWindow", "CheckBox"))
