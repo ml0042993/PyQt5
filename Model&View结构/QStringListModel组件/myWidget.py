@@ -68,6 +68,16 @@ class QmyWidget(QWidget):
 		'''
 		count = self.model.rowCount()
 		self.model.removeRows(0,count)
+
+	@pyqtSlot()
+	def on_btnStringList_clicked(self):
+		strlist = self.model.stringList()
+		self.ui.plainTextEdit.clear()
+		for strline in strlist:
+			self.ui.plainTextEdit.appendPlainText(strline)
+
+	def on_listView_clicked(self,index):
+		self.ui.label.setText("当前项 index: row = %d, column = %d"%(index.row(),index.column()))
 	##=========自定义槽函数============
 
 	##===========窗体测试程序==========
