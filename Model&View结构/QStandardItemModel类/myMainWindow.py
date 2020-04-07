@@ -1,7 +1,7 @@
-import sys
-from PyQt5.QtWidgets import QApplication,QMainWindow,QAbstractItemView,QLabel
+import sys,os
+from PyQt5.QtWidgets import QApplication,QMainWindow,QAbstractItemView,QLabel,QFileDialog
 from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt,QItemSelectionModel
-from PyQt5.QtGui import QStandardItemModel
+from PyQt5.QtGui import QStandardItemModel,QStandardItem
 # from PyQt5.QtWidgets import
 # from PyQt5.QtSql import
 # from PyQt5.QtMultimedia import
@@ -42,7 +42,8 @@ class QmyMainWindow(QMainWindow):
 		self.ui.tableView.setAlternatingRowColors(True)#交替行颜色
 		self.ui.tableView.setEnabled(False)#设置默认禁用tabelView
 
-		# self.setCentralWidget(self.ui.splitter)
+		self.setCentralWidget(self.ui.splitter)#设置中心组件
+		# self.setCentralWidget(self.ui.tableView)
 		self.__buildStatusBar()
 
 	##==========自定义功能函数==========
@@ -61,11 +62,56 @@ class QmyMainWindow(QMainWindow):
 
 		self.LabCurFile = QLabel("当前文件：",self)
 		self.ui.statusBar.addWidget(self.LabCurFile)
+	def __iniModelFromStringList(self,allLines):
+		rowCnt = len(allLines)#获取总行数
+		self.itemModel.setRowCount(rowCnt-1)
+		headerText = allLines[0].strip()
+		headerList = headerText.split("\t")
+		self.itemModel.setHorizontalHeaderLabels(headerList)
+		self.__lastColumnTitle = headerList[len(headerList)-1]
 
+		lastColNo = self.__ColCount-1
+		for i in range(rowCnt-1):
+			lineText = allLines[i+1].strip()
+			strList = lineText.split("\t")
+			for j in range(self.__ColCount-1):
+				item = QStandardItem(strList[j])
+				self.itemModel.setItem(i,j,item)
+			item = QStandardItem(self.__lastColumnTitle)
+			item.setFlags(self.__lastColumnFlags)
+			item.setCheckable(True)
+			if  strList[lastColNo] == 0:
+				item.setCheckState(Qt.Unchecked)
+			else:
+				item.setCheckState(Qt.Checked)
+			self.itemModel.setItem(i,lastColNo,item)
 	##==========事件处理函数===========
 
 	##==========由connectSlotsByName()自动关联的槽函数====
+	@pyqtSlot()
+	def on_actOpenFile_triggered(self):
 
+		curPath = os.getcwd()#获取当前路径
+		print(curPath)
+		#flt是文件过滤器
+		filename,flt = QFileDialog.getOpenFileName(self,"打开一个文件",curPath,"井斜数据文件(*.txt);;所有文件(*.*)")
+		if filename =="":
+			return
+		self.LabCurFile.setText(("当前文件: " + filename))#设置状态栏文本
+		self.ui.plainTextEdit.clear()
+		aFile = open(filename,"r")
+		allLines = aFile.readlines()
+		aFile.close()
+		for strLine in allLines:
+			self.ui.plainTextEdit.appendPlainText(strLine.strip())#按照行添加到plainTextEdit中
+		self.__iniModelFromStringList(allLines)
+		#设置激活状态
+		self.ui.tableView.setEnabled(True)
+		self.ui.actAppend.setEnabled(True)
+		self.ui.actInsert.setEnabled(True)
+		self.ui.actDel.setEnabled(True)
+		self.ui.actSaveFile.setEnabled(True)
+		self.ui.actModelData.setEnabled(True)
 	##=========自定义槽函数============
 	def do_curChanged(self,current,previous):
 		'''
