@@ -29,7 +29,7 @@ class QmyMainWindow(QMainWindow):
 		self.selectionModel = QItemSelectionModel(self.itemModel)
 
 		self.selectionModel.currentChanged.connect(self.do_curChanged)#单元格选择发生变化时会发射此信号
-		self.__lastColumnTitle = "测井取样"
+		self.__lastColumnTitle = ""#设置最后一列的标题，可以是空
 		self.__lastColumnFlags = (Qt.ItemIsSelectable|Qt.ItemIsUserCheckable|Qt.ItemIsEnabled)
 	#设置tableView属性
 		self.ui.tableView.setModel(self.itemModel)#数据模型
@@ -64,17 +64,24 @@ class QmyMainWindow(QMainWindow):
 		self.ui.statusBar.addWidget(self.LabCurFile)
 	def __iniModelFromStringList(self,allLines):
 		rowCnt = len(allLines)#获取总行数
-		self.itemModel.setRowCount(rowCnt-1)
-		headerText = allLines[0].strip()
-		headerList = headerText.split("\t")
-		self.itemModel.setHorizontalHeaderLabels(headerList)
-		self.__lastColumnTitle = headerList[len(headerList)-1]
+		self.itemModel.setRowCount(rowCnt-1)#除去表头的数据行数
+		headerText = allLines[0].strip()#表头去除换行符，文件呢的空格使用Tab代替
+		headerList = headerText.split("\t")#按照制表符转化为列表
+		self.itemModel.setHorizontalHeaderLabels(headerList)#设置表头标题
+		# print(headerList)
+		self.__lastColumnTitle = headerList[len(headerList)-1]#最后一列的标题
+		lastColNo = self.__ColCount-1#最后一列的列号
 
-		lastColNo = self.__ColCount-1
-		for i in range(rowCnt-1):
-			lineText = allLines[i+1].strip()
-			strList = lineText.split("\t")
+		for i in range(rowCnt-1):#除去表头的数据行数
+			lineText = allLines[i+1].strip()#去除换行符
+			strList = lineText.split("\t")#按制表符生成列表
 			for j in range(self.__ColCount-1):
+				'''
+				QStandardItem是一个数据结构，他可以存储一个cell的各种信息，比如文本、图标、是否可选、字体、别景色、前景色等等。
+				并且QStandardItem可以有孩子和兄弟，他是为model提供数据存储的节点。
+				QTableView：作为表格cell时，有一个作为根节点的QStandardItem，其他节点都是QStandardItem节点的孩子节点，并且都是兄弟节点(这里暂时不考虑多列的情况)。
+				QTreeView：作为树节点cell时，有一个作为根节点的QStandardItem，其他节点都是他的孩子节点，但是其他节点也可以作为父节点存在(这里暂时不考虑多列的情况)。
+				'''
 				item = QStandardItem(strList[j])
 				self.itemModel.setItem(i,j,item)
 			item = QStandardItem(self.__lastColumnTitle)
