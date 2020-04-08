@@ -103,7 +103,7 @@ class QmyMainWindow(QMainWindow):
 	def on_actOpenFile_triggered(self):
 
 		curPath = os.getcwd()#获取当前路径
-		print(curPath)
+		# print(curPath)?
 		#flt是文件过滤器
 		filename,flt = QFileDialog.getOpenFileName(self,"打开一个文件",curPath,"井斜数据文件(*.txt);;所有文件(*.*)")
 		if filename =="":
@@ -127,19 +127,50 @@ class QmyMainWindow(QMainWindow):
 	@pyqtSlot()
 	def on_actAppend_triggered(self):
 		itemlist = []
+		for i in range(self.__ColCount-1):#循环一行中的各个列,不包括最后一列
+			item = QStandardItem("0")#添加0到数据结构中
+			itemlist.append(item)
+
+		item = QStandardItem(self.__lastColumnTitle)#将最后一行的表头添加入数据结构
+		item.setCheckable(True)#可选
+		item.setFlags(self.__lastColumnFlags)
+		itemlist.append(item)#添加到itemlist内(添加到最后一个)
+
+		self.itemModel.appendRow(itemlist)
+
+		curIndex = self.itemModel.index(self.itemModel.rowCount()-1,0)#获取最后一行第一个单元格的模型索引
+		self.selectionModel.clearSelection()#清除选择
+		self.selectionModel.setCurrentIndex(curIndex,QItemSelectionModel.Select)#设置在添加后自动选择添加行的第一个单元格(可从状态栏确认)
+	@pyqtSlot()
+	def on_actInsert_triggered(self):
+		'''
+		插入行
+		:return:
+		'''
+		itemlist = []
 		for i in range(self.__ColCount-1):
 			item = QStandardItem("0")
 			itemlist.append(item)
 
 		item = QStandardItem(self.__lastColumnTitle)
-		item.setCheckable(True)
 		item.setFlags(self.__lastColumnFlags)
+		item.setCheckable(False)#是否可以修改选择
+		item.setCheckState(Qt.Checked)#是否选中
 		itemlist.append(item)
 
-		self.itemModel.appendRow(itemlist)
-		curIndex = self.itemModel.index(self.itemModel.rowCount()-1,0)
+		curIndex = self.selectionModel.currentIndex()#选中项的模型索引,包括行列等其他信息
+		self.itemModel.insertRow(curIndex.row(),itemlist)
+
 		self.selectionModel.clearSelection()
 		self.selectionModel.setCurrentIndex(curIndex,QItemSelectionModel.Select)
+	@pyqtSlot()
+	def on_actDel_triggered(self):
+		'''
+		删除行
+		:return:
+		'''
+		curIndex = self.selectionModel.currentIndex()
+		self.itemModel.removeRow(curIndex.row())
 	##=========自定义槽函数============
 	def do_curChanged(self,current,previous):
 		'''
@@ -149,7 +180,7 @@ class QmyMainWindow(QMainWindow):
 		:return:
 		'''
 		if current != None:
-			text = " 当前单元格： %d行，%d列"%(current.row(),current.column())
+			text = " 当前单元格： %d行，%d列"%(current.row()+1,current.column()+1)
 			self.LabCellPos.setText(text)
 			item = self.itemModel.itemFromIndex(current)
 			self.LabCellText.setText("单元格内容："+ item.text())

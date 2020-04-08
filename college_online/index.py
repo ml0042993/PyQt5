@@ -69,6 +69,6 @@ if __name__ == '__main__':
 	# 		if question == contrast[1]:
 	# 			print(question_number,contrast[1],judge(contrast))
 	# 			break
-	# 	else:
-	# 		print("can't find it")
+	# 		else:
+	# 			print("can't find it")
 	question()
