@@ -1,7 +1,7 @@
 import sys,os
 from PyQt5.QtWidgets import QApplication,QMainWindow,QAbstractItemView,QLabel,QFileDialog
 from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt,QItemSelectionModel
-from PyQt5.QtGui import QStandardItemModel,QStandardItem
+from PyQt5.QtGui import QStandardItemModel,QStandardItem,QFont
 # from PyQt5.QtWidgets import
 # from PyQt5.QtSql import
 # from PyQt5.QtMultimedia import
@@ -90,7 +90,7 @@ class QmyMainWindow(QMainWindow):
 			item = QStandardItem(self.__lastColumnTitle)#将最后一行的表头
 			item.setFlags(self.__lastColumnFlags)
 			item.setCheckable(True)
-			print(strList[lastColNo])
+			# print(strList[lastColNo])
 			if strList[lastColNo] == '0':#对比文本内的数值进行设定,类型是字符串
 				item.setCheckState(Qt.Unchecked)
 			else:
@@ -103,7 +103,7 @@ class QmyMainWindow(QMainWindow):
 		selectedIndexes()返回一个元素为QModelIndex类型的列表,包括所有被选中的单元格的模型索引
 		'''
 		selectdIndex = self.selectionModel.selectedIndexes()
-		print(selectdIndex)
+		# print(selectdIndex)
 		count = len(selectdIndex)
 		for i in range(count):
 			index = selectdIndex[i]
@@ -198,6 +198,23 @@ class QmyMainWindow(QMainWindow):
 	@pyqtSlot()
 	def on_actAlignRight_triggered(self):
 		self.__setCellAlignment(Qt.AlignRight|Qt.AlignVCenter)
+
+	@pyqtSlot(bool)
+	def on_actFontBold_triggered(self,checked):
+		print("1",checked)
+		checked = not checked
+		if not self.selectionModel.hasSelection():
+			return
+		selectIndex = self.selectionModel.selectedIndexes()
+		for i in range(len(selectIndex)):
+			index = selectIndex[i]
+			item = self.itemModel.itemFromIndex(index)
+			print(item)
+			font = item.font()
+			print("2",checked)
+			font.setBold(checked)
+			item.setFont(font)
+
 	##=========自定义槽函数============
 	def do_curChanged(self,current,previous):
 		'''
@@ -214,6 +231,7 @@ class QmyMainWindow(QMainWindow):
 
 			font = item.font()
 			self.ui.actFontBold.setChecked(font.bold())
+			print(font.bold())
 
 
 	##===========窗体测试程序==========
