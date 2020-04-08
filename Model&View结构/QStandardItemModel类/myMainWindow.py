@@ -15,7 +15,7 @@ class QmyMainWindow(QMainWindow):
 		self.ui = Ui_MainWindow()#创建Ui对象
 		self.ui.setupUi(self)#构造UI
 
-		self.__ColCount = 6
+		self.__ColCount = 6#列数
 		self.itemModel = QStandardItemModel(5,self.__ColCount,self)#创建QStandardItemModel类型的数据模型,指定行列值
 		'''
 		setSelectionBehavior()
@@ -73,9 +73,10 @@ class QmyMainWindow(QMainWindow):
 		lastColNo = self.__ColCount-1#最后一列的列号
 
 		for i in range(rowCnt-1):#除去表头的数据行数
-			lineText = allLines[i+1].strip()#去除换行符
+			# print(i)
+			lineText = allLines[i+1].strip()#去除换行符,不包括表头
 			strList = lineText.split("\t")#按制表符生成列表
-			for j in range(self.__ColCount-1):
+			for j in range(self.__ColCount-1):#不包括最后一列
 				'''
 				QStandardItem是一个数据结构，他可以存储一个cell的各种信息，比如文本、图标、是否可选、字体、别景色、前景色等等。
 				并且QStandardItem可以有孩子和兄弟，他是为model提供数据存储的节点。
@@ -84,10 +85,13 @@ class QmyMainWindow(QMainWindow):
 				'''
 				item = QStandardItem(strList[j])
 				self.itemModel.setItem(i,j,item)
-			item = QStandardItem(self.__lastColumnTitle)
+			#设置最后一行
+			# print(self.__lastColumnTitle)
+			item = QStandardItem(self.__lastColumnTitle)#将最后一行的表头
 			item.setFlags(self.__lastColumnFlags)
 			item.setCheckable(True)
-			if  strList[lastColNo] == 0:
+			print(strList[lastColNo])
+			if strList[lastColNo] == '0':#对比文本内的数值进行设定,类型是字符串
 				item.setCheckState(Qt.Unchecked)
 			else:
 				item.setCheckState(Qt.Checked)
@@ -119,6 +123,23 @@ class QmyMainWindow(QMainWindow):
 		self.ui.actDel.setEnabled(True)
 		self.ui.actSaveFile.setEnabled(True)
 		self.ui.actModelData.setEnabled(True)
+
+	@pyqtSlot()
+	def on_actAppend_triggered(self):
+		itemlist = []
+		for i in range(self.__ColCount-1):
+			item = QStandardItem("0")
+			itemlist.append(item)
+
+		item = QStandardItem(self.__lastColumnTitle)
+		item.setCheckable(True)
+		item.setFlags(self.__lastColumnFlags)
+		itemlist.append(item)
+
+		self.itemModel.appendRow(itemlist)
+		curIndex = self.itemModel.index(self.itemModel.rowCount()-1,0)
+		self.selectionModel.clearSelection()
+		self.selectionModel.setCurrentIndex(curIndex,QItemSelectionModel.Select)
 	##=========自定义槽函数============
 	def do_curChanged(self,current,previous):
 		'''
