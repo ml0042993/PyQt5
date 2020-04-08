@@ -96,6 +96,22 @@ class QmyMainWindow(QMainWindow):
 			else:
 				item.setCheckState(Qt.Checked)
 			self.itemModel.setItem(i,lastColNo,item)
+	def __setCellAlignment(self,align=Qt.AlignHCenter):
+		if not self.selectionModel.hasSelection():
+			return
+		'''
+		selectedIndexes()返回一个元素为QModelIndex类型的列表,包括所有被选中的单元格的模型索引
+		'''
+		selectdIndex = self.selectionModel.selectedIndexes()
+		print(selectdIndex)
+		count = len(selectdIndex)
+		for i in range(count):
+			index = selectdIndex[i]
+			'''
+			itemFromIndex(index)返回的是模型索引为index的QStandardItem对象
+			'''
+			item = self.itemModel.itemFromIndex(index)
+			item.setTextAlignment(align)
 	##==========事件处理函数===========
 
 	##==========由connectSlotsByName()自动关联的槽函数====
@@ -171,6 +187,17 @@ class QmyMainWindow(QMainWindow):
 		'''
 		curIndex = self.selectionModel.currentIndex()
 		self.itemModel.removeRow(curIndex.row())
+
+
+	@pyqtSlot()
+	def on_actAlignLeft_triggered(self):
+		self.__setCellAlignment(Qt.AlignLeft|Qt.AlignVCenter)
+	@pyqtSlot()
+	def on_actAlignCenter_triggered(self):
+		self.__setCellAlignment(Qt.AlignHCenter|Qt.AlignVCenter)
+	@pyqtSlot()
+	def on_actAlignRight_triggered(self):
+		self.__setCellAlignment(Qt.AlignRight|Qt.AlignVCenter)
 	##=========自定义槽函数============
 	def do_curChanged(self,current,previous):
 		'''
@@ -187,6 +214,8 @@ class QmyMainWindow(QMainWindow):
 
 			font = item.font()
 			self.ui.actFontBold.setChecked(font.bold())
+
+
 	##===========窗体测试程序==========
 if __name__ == '__main__':
 	app = QApplication(sys.argv)
