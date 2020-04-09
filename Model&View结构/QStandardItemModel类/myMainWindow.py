@@ -41,7 +41,7 @@ class QmyMainWindow(QMainWindow):
 		self.ui.tableView.verticalHeader().setDefaultSectionSize(22)
 		self.ui.tableView.setAlternatingRowColors(True)#交替行颜色
 		self.ui.tableView.setEnabled(False)#设置默认禁用tabelView
-
+		self.ui.actFontBold.setCheckable(False)
 		self.setCentralWidget(self.ui.splitter)#设置中心组件
 		# self.setCentralWidget(self.ui.tableView)
 		self.__buildStatusBar()
@@ -139,6 +139,7 @@ class QmyMainWindow(QMainWindow):
 		self.ui.actDel.setEnabled(True)
 		self.ui.actSaveFile.setEnabled(True)
 		self.ui.actModelData.setEnabled(True)
+		self.ui.actFontBold.setCheckable(True)#设置加粗可用
 
 	@pyqtSlot()
 	def on_actAppend_triggered(self):
@@ -201,20 +202,16 @@ class QmyMainWindow(QMainWindow):
 
 	@pyqtSlot(bool)
 	def on_actFontBold_triggered(self,checked):
-		print("1",checked)
-		checked = not checked
+		print("1,checked",checked)
 		if not self.selectionModel.hasSelection():
 			return
 		selectIndex = self.selectionModel.selectedIndexes()
 		for i in range(len(selectIndex)):
 			index = selectIndex[i]
 			item = self.itemModel.itemFromIndex(index)
-			print(item)
 			font = item.font()
-			print("2",checked)
 			font.setBold(checked)
 			item.setFont(font)
-
 	##=========自定义槽函数============
 	def do_curChanged(self,current,previous):
 		'''
@@ -230,7 +227,7 @@ class QmyMainWindow(QMainWindow):
 			self.LabCellText.setText("单元格内容："+ item.text())
 
 			font = item.font()
-			self.ui.actFontBold.setChecked(font.bold())
+			self.ui.actFontBold.setChecked(font.bold())#设置按钮按下,当font.Bold的值大于50式font.blod()会为True
 			print(font.bold())
 
 
