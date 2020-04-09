@@ -234,6 +234,21 @@ class QmyMainWindow(QMainWindow):
 				lineStr = lineStr+"1"
 			else:lineStr = lineStr+"0"
 			self.ui.plainTextEdit.appendPlainText(lineStr)
+
+	@pyqtSlot()
+	def on_actSaveFile_triggered(self):
+		'''
+		保存文件
+		:return:
+		'''
+		curPath = os.getcwd()
+		filename,flt = QFileDialog.getSaveFileName(self,"保存文件",curPath,"井斜数据文件(*.txt);;所有文件(*.*)")
+		if filename =="":
+			return
+		self.on_actModelData_triggered()
+		aFile = open(filename,"w")
+		aFile.write(self.ui.plainTextEdit.toPlainText())
+		aFile.close()
 	##=========自定义槽函数============
 	def do_curChanged(self,current,previous):
 		'''
