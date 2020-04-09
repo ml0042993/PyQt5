@@ -212,6 +212,28 @@ class QmyMainWindow(QMainWindow):
 			font = item.font()
 			font.setBold(checked)
 			item.setFont(font)
+
+	@pyqtSlot()
+	def on_actModelData_triggered(self):
+		self.ui.plainTextEdit.clear()
+		lineStr = ""
+		for i in range(self.itemModel.columnCount()-1):#不包括最后一列的表头遍历
+			item = self.itemModel.horizontalHeaderItem(i)#返回行标题的一个数据项对象,i是列号
+			lineStr = lineStr+item.text()+"\t"#给每个项对象的文本添加Tab制表符
+		item = self.itemModel.horizontalHeaderItem(self.__ColCount-1)#最后一列的表头
+		lineStr = lineStr+item.text()
+		self.ui.plainTextEdit.appendPlainText(lineStr)
+
+		for i in range(self.itemModel.rowCount()):#获取行总数,不包括表头行
+			lineStr = ""
+			for j in range(self.itemModel.columnCount()-1):#不包括最后一列的遍历
+				item = self.itemModel.item(i,j)#按照行列号获取工作区内项对象
+				lineStr = lineStr+item.text()+"\t"#项对象文本添加制表符
+			item = self.itemModel.item(i,self.__ColCount-1)#按照行号获取最后一列的项对象
+			if item.checkState() == Qt.Checked:#匹配状态是否为选中
+				lineStr = lineStr+"1"
+			else:lineStr = lineStr+"0"
+			self.ui.plainTextEdit.appendPlainText(lineStr)
 	##=========自定义槽函数============
 	def do_curChanged(self,current,previous):
 		'''
@@ -228,7 +250,6 @@ class QmyMainWindow(QMainWindow):
 
 			font = item.font()
 			self.ui.actFontBold.setChecked(font.bold())#设置按钮按下,当font.Bold的值大于50式font.blod()会为True
-			print(font.bold())
 
 
 	##===========窗体测试程序==========
