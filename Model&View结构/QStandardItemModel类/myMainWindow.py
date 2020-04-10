@@ -8,7 +8,7 @@ from PyQt5.QtGui import QStandardItemModel,QStandardItem,QFont
 # from PyQt5.QtMultimediaWidgets import
 
 from ui_MainWindow import Ui_MainWindow
-
+from myDelegates import QmyComboBoxDelegate,QmyFloatSpinDelegate
 class QmyMainWindow(QMainWindow):
 	def __init__(self,parent=None):
 		super().__init__(parent)#调用父类构造函数,创建窗体
@@ -16,7 +16,7 @@ class QmyMainWindow(QMainWindow):
 		self.ui.setupUi(self)#构造UI
 
 		self.__ColCount = 6#列数
-		self.itemModel = QStandardItemModel(5,self.__ColCount,self)#创建QStandardItemModel类型的数据模型,指定行列值
+		self.itemModel = QStandardItemModel(10,self.__ColCount,self)#创建QStandardItemModel类型的数据模型,指定行列值
 		'''
 		setSelectionBehavior()
 		此属性保存视图使用的选择行为。
@@ -46,6 +46,19 @@ class QmyMainWindow(QMainWindow):
 		# self.setCentralWidget(self.ui.tableView)
 		self.__buildStatusBar()
 
+		self.spinCeshen = QmyFloatSpinDelegate(0,10000,0,self)
+		self.spinLength = QmyFloatSpinDelegate(0,6000,2,self)
+		self.spinDegree = QmyFloatSpinDelegate(0,360,1,self)
+		self.ui.tableView.setItemDelegateForColumn(0,self.spinCeshen)
+		self.ui.tableView.setItemDelegateForColumn(1,self.spinLength)
+		self.ui.tableView.setItemDelegateForColumn(3,self.spinLength)
+		self.ui.tableView.setItemDelegateForColumn(2,self.spinDegree)
+
+		qualities = ["优","良","合格","不合格"]
+
+		self.comboDelegate = QmyComboBoxDelegate(self)
+		self.comboDelegate.setItems(qualities,False)
+		self.ui.tableView.setItemDelegateForColumn(4,self.comboDelegate)
 	##==========自定义功能函数==========
 	def __buildStatusBar(self):
 		'''

@@ -56,7 +56,7 @@ class QmyFloatSpinDelegate(QStyledItemDelegate):
 		'''
 		editor.setGeometry(option.rect)
 
-class QmComboBoxDelegate(QStyledItemDelegate):
+class QmyComboBoxDelegate(QStyledItemDelegate):
 	def __init__(self,parent=None):
 		super().__init__(parent)
 		self.__itemList = []
