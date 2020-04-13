@@ -39,8 +39,9 @@ def question():
 	return question
 
 def excle_answer():
-	read_answer = xlrd.open_workbook('./flie/exam_excle.xls')
+	read_answer = xlrd.open_workbook('./File/exam_excle.xls')
 	sheet = read_answer.sheet_by_index(0)
+	print(sheet)
 	for i in range(sheet.nrows):
 		rows = sheet.row_values(i)
 		if TYPE.__contains__(rows[5]):
@@ -75,6 +76,6 @@ if __name__ == '__main__':
 	# 			break
 	# 		else:
 	# 			print("can't find it")
-	for i in question():
+	for i in excle_answer():
 		print(i)
 	print(len(question_tit()))

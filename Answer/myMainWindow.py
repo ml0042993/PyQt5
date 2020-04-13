@@ -1,5 +1,5 @@
 import sys,os,re,xlrd
-from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog
+from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog,QAbstractItemView
 from PyQt5.QtCore import pyqtSlot,Qt,QStringListModel
 # from PyQt5.QtGui import
 # from PyQt5.QtWidgets import
@@ -14,26 +14,10 @@ class QmyMainWindow(QMainWindow):
 		super().__init__(parent)#调用父类构造函数,创建窗体
 		self.ui = Ui_MainWindow()#创建Ui对象
 		self.ui.setupUi(self)#构造UI
+		self.ui.listView.setEditTriggers(QAbstractItemView.NoEditTriggers)
 		self.__question_txt = []
 		self.__question_excle = []
 	##==========自定义功能函数==========
-	@pyqtSlot()
-	def on_actOpen_File_triggered(self):
-		curPath=os.getcwd()
-
-		self.FileName,self.flt = QFileDialog.getOpenFileName(self,"打开一个文件",curPath,"exam(*.txt);;excle(*.xls)")
-		if self.FileName == "":
-			return
-
-		elif self.flt == "exam(*.txt)":
-			# print(111)
-			self.__question_txt = self.__question()
-			# print(self.__question_txt)
-			self.model = QStringListModel(self)
-			self.model.setStringList(self.__question_txt)
-			self.ui.listView.setModel(self.model)
-		elif self.flt == "excle(*.xls)":
-			print(12)
 	def __question_num(self):
 		question_num = []
 		num_word = re.compile(r'第\s*\d+\s*题')
@@ -71,6 +55,25 @@ class QmyMainWindow(QMainWindow):
 ##==========事件处理函数===========
 
 	##==========由connectSlotsByName()自动关联的槽函数====
+	@pyqtSlot()
+	def on_actOpen_File_triggered(self):
+		curPath=os.getcwd()
+
+		self.FileName,self.flt = QFileDialog.getOpenFileName(self,"打开一个文件",curPath,"exam(*.txt);;excle(*.xls)")
+		if self.FileName == "":
+			return
+
+		elif self.flt == "exam(*.txt)":
+			# print(111)
+			self.__question_txt = self.__question()
+			# print(self.__question_txt)
+			self.model = QStringListModel(self)
+			self.model.setStringList(self.__question_txt)
+			self.ui.listView.setModel(self.model)
+		elif self.flt == "excle(*.xls)":
+			print(12)
+	def on_listView_clicked(self,index):
+		print(index.row())
 
 	##=========自定义槽函数============
 
