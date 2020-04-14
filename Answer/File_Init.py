@@ -40,58 +40,28 @@ def ini_File():
 	os.rename(TEMP_PATH,FILE_PATH)
 
 def Ini_Model_Data():
+	'''
+	格式化文档，将题目和选项放入一个列表内，合并为一个二维列表
+	:return:
+	'''
 	Model_Data=[]
-	Temp_List=[]
 	with open(FILE_PATH,'r',encoding="utf-8") as f:
 		Start = 0
 		End = 0
-
 		lines = f.readlines()
 		for i in range(len(lines)):
 			title_Num = TIT_WORD.search(lines[i])
+			lines[i]=lines[i].replace(" ","")#去除空格
+			lines[i]=lines[i].replace("\n","")#去除换行符
 			if title_Num:
-				Start=i
-			End+=1
-			Temp_List.append(lines[Start:End])
-		print(Temp_List)
-def question_num():
-	question_num=[]
-	with open ('./File/exam.txt','r' , encoding='utf8') as ef:
-		lines = ef.readlines()
-		x = None
-		y = None
-		for i in range(len(lines)):
-			num_question = NUM_WORD.search(lines[i])
-			anchor = KEY_WORD.search(lines[i])
-			if num_question:
-				x = i
-			elif anchor :
-				y = i
-			if x!=None and y!=None:
-				line_anchor = lines[x+1:y+1]
-				x, y = None, None
-				print(line_anchor)
+				lines[i]=title_Num.group()#更换题号为第 XX 题
+				Model_Data.append(lines[Start:i])#将lines切片添加到列表中，说明Start初始为0，当title_num匹配后i=2，之后再修改Start=i即为2
+				Start = i#切片后再修改行号，否则切片使用的锚点会一样，切片为空列表
+			End=i#拿到文档的最后一行行号
+		# 遍历中切片的最后一个lines[Start:i]的锚点分别为第99题的行号Start和第100题的行号i，当Start=i以后title_Num条件无法达成，不会对100题内容进行切片
+		Model_Data.append(lines[Start:End])
 
-def question_tit():
-	question_tit=[]
-	with open('./File/exam.txt', 'r', encoding='utf8') as ef:
-		lines = ef.readlines()
-		for line in lines:
-			anchor = key_word.search(line)
-			if anchor:
-				# flag_num +=1
-				message = anchor.group()
-				result = re.sub('\s+', '', message)
-				question_title = re.sub('（）', '()', result)
-				question_tit.append(question_title)
-	return question_tit
-
-def question():
-	question = []
-	for i in range(len(question_num())):
-		question.append([question_num()[i],question_tit()[i]])
-	return question
-
+	return Model_Data
 def excle_answer():
 	read_answer = xlrd.open_workbook('./File/exam_excle.xls')
 	sheet = read_answer.sheet_by_index(0)
@@ -123,5 +93,4 @@ def judge(args):
 		answer.append(args[2][int(num)])
 	return answer
 if __name__ == '__main__':
-	# question_num()
 	Ini_Model_Data()
