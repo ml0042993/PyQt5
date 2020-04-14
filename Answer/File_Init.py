@@ -3,14 +3,12 @@ import xlrd
 import os
 
 TYPE = ['单选题','多选题','判断题']
-# SORT = [('单选题',1),('多选题',2),('判断题',3)]
 TIT_WORD = re.compile(r'第\s*\d+\s*题')
 KEY_WORD = re.compile(r'.+(?=A\.)')#选取A.前面的内容
 INI_WORD = re.compile(r'A\.')
 REP_WORD = re.compile(r'A.\s+')#A.后面若干空格
 FILE_PATH = os.getcwd()+"\File\exam_bat"#格式化后的文件路径
 TEMP_PATH = os.getcwd()+"\File\exam_tmp"#临时文件路径
-print(FILE_PATH)
 def ini_File():
 	'''
 	初始化文档,令A.选项进入下一行
@@ -60,7 +58,6 @@ def Ini_Model_Data():
 			End=i#拿到文档的最后一行行号
 		# 遍历中切片的最后一个lines[Start:i]的锚点分别为第99题的行号Start和第100题的行号i，当Start=i以后title_Num条件无法达成，不会对100题内容进行切片
 		Model_Data.append(lines[Start:End])
-
 	return Model_Data
 def excle_answer():
 	read_answer = xlrd.open_workbook('./File/exam_excle.xls')
