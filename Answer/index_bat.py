@@ -13,10 +13,13 @@ def question_num():
 		for line in lines:
 			num_question = num_word.search(line)
 			if num_question:
-				num = num_question.group()
-				question_number = re.sub('\s+','',num)
-				question_num.append(question_number)
-	return question_num
+				line_num = ef.tell()
+				print(line_num)
+				print(ef.next())
+	# 			num = num_question.group()
+	# 			question_number = re.sub('\s+','',num)
+	# 			question_num.append(question_number)
+	# return question_num
 def question_tit():
 	question_tit=[]
 	key_word = re.compile(r'.+(?=A\.)')
@@ -76,6 +79,7 @@ if __name__ == '__main__':
 	# 			break
 	# 		else:
 	# 			print("can't find it")
-	for i in excle_answer():
-		print(i)
-	print(len(question_tit()))
+	# for i in excle_answer():
+	# 	print(i)
+	# print(len(question_tit()))
+	question_num()
