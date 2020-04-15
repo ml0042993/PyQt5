@@ -1,5 +1,5 @@
 import sys,os,re,xlrd
-from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog,QAbstractItemView
+from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog,QAbstractItemView,QDialog
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from PyQt5.QtWidgets import QCheckBox
@@ -89,7 +89,17 @@ class QmyMainWindow(QMainWindow):
 				for j in range(Count_Col):
 					item = QStandardItem(Model_Data[i][j])
 					self.itemModel.setItem(i,j,item)
-
+	def __CreateChecked(self,checkName,checkText):
+		'''
+		创建复选框
+		:param checkName: 复选框的objectName
+		:param checkText: 复选框的文本内容
+		:return:
+		'''
+		self.chk = QCheckBox(self.ui.groupBox_2)#在groupBox_2内实例化复选框
+		self.chk.setObjectName(checkName)#设置名称
+		self.ui.verticalLayout_3.addWidget(self.chk)#添加复选框到布局管理器内，必要的，否则无法正常显示
+		self.chk.setText(checkText)#设置文本内容
 	##==========事件处理函数===========
 
 	##==========由connectSlotsByName()自动关联的槽函数====
@@ -129,11 +139,13 @@ class QmyMainWindow(QMainWindow):
 			item = self.itemModel.item(index.row(),i)#遍历二级列表内的元素
 			try:
 				anchor = item.text()
-
-				print(anchor)
-			except AttributeError as e:
-				print(e)
+				checkName = "chk_{}_{}".format(index.row(),i)
+				self.__CreateChecked(checkName,anchor)#按照选项个数动态生成生成复选框
+			except AttributeError:
 				break
+		# for i in self.ui.groupBox_2.children():
+		# 	if isinstance(i,QCheckBox):
+		# 		print(i.text())
 
 	@pyqtSlot()
 	def on_btnInit_clicked(self):
