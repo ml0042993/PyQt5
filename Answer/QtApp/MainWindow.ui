@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
-    <height>435</height>
+    <width>900</width>
+    <height>521</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>900</width>
+    <height>500</height>
+   </size>
+  </property>
+  <property name="baseSize">
+   <size>
+    <width>900</width>
+    <height>500</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -200,7 +212,7 @@
   <action name="actQuit">
    <property name="icon">
     <iconset resource="res.qrc">
-     <normaloff>:/icons/images/324.bmp</normaloff>:/icons/images/324.bmp</iconset>
+     <normaloff>:/icons/images/exit.bmp</normaloff>:/icons/images/exit.bmp</iconset>
    </property>
    <property name="text">
     <string>退出</string>

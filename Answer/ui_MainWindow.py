@@ -13,7 +13,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(417, 435)
+        MainWindow.resize(900, 521)
+        MainWindow.setMinimumSize(QtCore.QSize(900, 500))
+        MainWindow.setBaseSize(QtCore.QSize(900, 500))
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setObjectName("centralWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralWidget)
@@ -109,7 +111,7 @@ class Ui_MainWindow(object):
         self.actOpen_File.setObjectName("actOpen_File")
         self.actQuit = QtWidgets.QAction(MainWindow)
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/icons/images/324.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/icons/images/exit.bmp"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actQuit.setIcon(icon1)
         self.actQuit.setObjectName("actQuit")
         self.mainToolBar.addAction(self.actOpen_File)

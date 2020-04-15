@@ -1,8 +1,8 @@
 import sys,os,re,xlrd
 from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog,QAbstractItemView
-from PyQt5.QtCore import pyqtSlot,Qt,QStringListModel
-# from PyQt5.QtGui import
-# from PyQt5.QtWidgets import
+from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtGui import QStandardItemModel,QStandardItem
+from PyQt5.QtWidgets import QCheckBox
 # from PyQt5.QtSql import
 # from PyQt5.QtMultimedia import
 # from PyQt5.QtMultimediaWidgets import
@@ -23,15 +23,20 @@ class QmyMainWindow(QMainWindow):
 		self.ui = Ui_MainWindow()#创建Ui对象
 		self.ui.setupUi(self)#构造UI
 		self.ui.listView.setEditTriggers(QAbstractItemView.NoEditTriggers)
-
+		self.itemModel = QStandardItemModel(self)
+		self.ui.listView.setModel(self.itemModel)
+		self.ui.btnInit.setEnabled(False)
+		self.ui.btnNext.setEnabled(False)
+		self.ui.btnPrevious.setEnabled(False)
+		self.ui.spinBox.setEnabled(False)
 	##==========自定义功能函数==========
-	def __ini_File(self):
+	def __ini_File(self,FileName):
 		'''
 		初始化文档,令A.选项进入下一行
 		:return:
 		'''
 		with open(Key_Word.FILE_PATH.value, 'w', encoding='utf-8') as f:
-			with open('./File/exam.txt', 'r', encoding='utf8') as ef:
+			with open(FileName, 'r', encoding='utf8') as ef:
 				lines = ef.readlines()
 				for line in lines:
 					anchor = Key_Word.INI_WORD.value.search(line)
@@ -43,61 +48,102 @@ class QmyMainWindow(QMainWindow):
 			with open(Key_Word.FILE_PATH.value, 'r', encoding="utf-8") as f:
 				lines = f.readlines()  # 按行读取文件,返回的是一个列表
 				for i in range(len(lines)):
-					if lines[i] == '\n':  # 列表元素为空则不进行判断,进入下一行遍历
+					if lines[i] =='\n' or lines[i] =='一、单选题\n' or lines[i] =='二、多选题\n' or lines[i] =='三、判断题\n':  # 列表元素为空则不进行判断,进入下一行遍历
 						continue
-					anchor = Key_Word.REP_WORD.search(lines[i])
+					anchor = Key_Word.REP_WORD.value.search(lines[i])
 					if anchor:
 						result = re.sub('A.\s+', "A.  ", lines[i])  # 格式化A.选项,令其后只有两个空格
 						lines[i] = result  # 替换当前元素
 					nf.write(lines[i])
 		os.remove(Key_Word.FILE_PATH.value)
 		os.rename(Key_Word.TEMP_PATH.value, Key_Word.FILE_PATH.value)
+		print("end")
 
 	def __Ini_Model_Data(self):
 		'''
 		格式化文档，将题目和选项放入一个列表内，合并为一个二维列表
 		:return:
 		'''
-		Model_Data = []
+		self.Model_Data = []
 		with open(Key_Word.FILE_PATH.value, 'r', encoding="utf-8") as f:
 			Start = 0
 			End = 0
 			lines = f.readlines()
 			for i in range(len(lines)):
-				title_Num = Key_Word.TIT_WORD.search(lines[i])
+				title_Num = Key_Word.TIT_WORD.value.search(lines[i])
 				lines[i] = lines[i].replace(" ", "")  # 去除空格
 				lines[i] = lines[i].replace("\n", "")  # 去除换行符
-				if title_Num:
+				if title_Num and lines[i]!="\n":
 					lines[i] = title_Num.group()  # 更换题号为第 XX 题
-					Model_Data.append(lines[Start:i])  # 将lines切片添加到列表中，说明Start初始为0，当title_num匹配后i=2，之后再修改Start=i即为2
+					self.Model_Data.append(lines[Start:i])  # 将lines切片添加到列表中，说明Start初始为0，当title_num匹配后i=2，之后再修改Start=i即为2
 					Start = i  # 切片后再修改行号，否则切片使用的锚点会一样，切片为空列表
 				End = i  # 拿到文档的最后一行行号
 			# 遍历中切片的最后一个lines[Start:i]的锚点分别为第99题的行号Start和第100题的行号i，当Start=i以后title_Num条件无法达成，不会对100题内容进行切片
-			Model_Data.append(lines[Start:End])
-		return Model_Data
+			# self.Model_Data.append(lines[Start:End])
+			self.Model_Data.append(lines[Start:Start+3])
+	def __InitModelFormList(self,Model_Data):
+		Count_Row = len(Model_Data)
+		for i in range(Count_Row):
+			if len(Model_Data[i]) > 2:
+				Count_Col = len(Model_Data[i])#Count_Col是二维列表内的列表的长度
+				for j in range(Count_Col):
+					item = QStandardItem(Model_Data[i][j])
+					self.itemModel.setItem(i,j,item)
 
 	##==========事件处理函数===========
 
 	##==========由connectSlotsByName()自动关联的槽函数====
 	@pyqtSlot()
 	def on_actOpen_File_triggered(self):
-		curPath=os.getcwd()
-
-		self.FileName,self.flt = QFileDialog.getOpenFileName(self,"打开一个文件",curPath,"exam(*.txt);;excle(*.xls)")
+		self.FileName,self.flt = QFileDialog.getOpenFileName(self,"打开一个文件",Key_Word.FILE_PATH.value,"exam(*.txt);;excle(*.xls)")
 		if self.FileName == "":
 			return
 
 		elif self.flt == "exam(*.txt)":
-			# print(111)
-			self.__question_txt = self.__question()
-			# print(self.__question_txt)
-			self.model = QStringListModel(self)
-			self.model.setStringList(self.__question_txt)
-			self.ui.listView.setModel(self.model)
+			# self.__question_txt = self.__question()
+			# self.model = QStringListModel(self)
+			# self.model.setStringList(self.__question_txt)
+			# self.ui.listView.setModel(self.model)
+			print(self.FileName)
+
+			self.ui.btnInit.setEnabled(True)
+			self.File_path=self.FileName
 		elif self.flt == "excle(*.xls)":
 			print(12)
 	def on_listView_clicked(self,index):
-		print(index.row())
+		'''
+		index.row()是行号
+		:param index:
+		:return:
+		'''
+		self.ui.lineEdit.clear()
+		for i in self.ui.groupBox_2.children():
+			if type(i) == QCheckBox:
+				i.deleteLater()#删除checkBox组件
+		item = self.itemModel.item(index.row(),1)#获取题目的单元格的QStandardItem对象
+		Title = item.text()#
+		self.ui.lineEdit.setText(Title)#给文本框设置文字
+
+		Column = self.itemModel.columnCount()#获取二维列表的长度
+		for i in range(2,Column):
+			item = self.itemModel.item(index.row(),i)#遍历二级列表内的元素
+			try:
+				anchor = item.text()
+
+				print(anchor)
+			except AttributeError as e:
+				print(e)
+				break
+
+	@pyqtSlot()
+	def on_btnInit_clicked(self):
+		'''
+		初始化按钮
+		:return:
+		'''
+		self.__ini_File(self.FileName)
+		self.__Ini_Model_Data()
+		self.__InitModelFormList(self.Model_Data)
 
 	##=========自定义槽函数============
 
