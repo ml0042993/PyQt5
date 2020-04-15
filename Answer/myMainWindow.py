@@ -10,9 +10,10 @@ from enum import Enum
 from ui_MainWindow import Ui_MainWindow
 class Key_Word(Enum):
 	TIT_WORD = re.compile(r'第\s*\d+\s*题')
-	KEY_WORD = re.compile(r'.+(?=A\.)')  # 选取A.前面的内容
+	KEY_WORD = re.compile(r'.\s+')
 	INI_WORD = re.compile(r'A\.')
 	REP_WORD = re.compile(r'A.\s+')  # A.后面若干空格
+
 	FILE_PATH = os.getcwd() + "\File\exam_bat"  # 格式化后的文件路径
 	TEMP_PATH = os.getcwd() + "\File\exam_tmp"  # 临时文件路径
 
@@ -43,12 +44,14 @@ class QmyMainWindow(QMainWindow):
 					if anchor:
 						result = re.sub("A.", "\n       A.", line)  # 令A选项格式化到下一行,并和B选项对齐
 						line = result
+					elif line =='一、单选题\n' or line =='二、多选题\n' or line =='三、判断题\n':
+						continue
 					f.write(line)
 		with open(Key_Word.TEMP_PATH.value, 'w', encoding="utf-8") as nf:
 			with open(Key_Word.FILE_PATH.value, 'r', encoding="utf-8") as f:
 				lines = f.readlines()  # 按行读取文件,返回的是一个列表
 				for i in range(len(lines)):
-					if lines[i] =='\n' or lines[i] =='一、单选题\n' or lines[i] =='二、多选题\n' or lines[i] =='三、判断题\n':  # 列表元素为空则不进行判断,进入下一行遍历
+					if lines[i] =='\n':  # 列表元素为空则不进行判断,进入下一行遍历
 						continue
 					anchor = Key_Word.REP_WORD.value.search(lines[i])
 					if anchor:
@@ -69,7 +72,8 @@ class QmyMainWindow(QMainWindow):
 			Start = 0
 			End = 0
 			lines = f.readlines()
-			for i in range(len(lines)):
+			num = len(lines)
+			for i in range(num):
 				title_Num = Key_Word.TIT_WORD.value.search(lines[i])
 				lines[i] = lines[i].replace(" ", "")  # 去除空格
 				lines[i] = lines[i].replace("\n", "")  # 去除换行符
@@ -80,15 +84,16 @@ class QmyMainWindow(QMainWindow):
 				End = i  # 拿到文档的最后一行行号
 			# 遍历中切片的最后一个lines[Start:i]的锚点分别为第99题的行号Start和第100题的行号i，当Start=i以后title_Num条件无法达成，不会对100题内容进行切片
 			# self.Model_Data.append(lines[Start:End])
-			self.Model_Data.append(lines[Start:Start+3])
+			self.Model_Data.append(lines[Start:Start+4])
 	def __InitModelFormList(self,Model_Data):
 		Count_Row = len(Model_Data)
 		for i in range(Count_Row):
-			if len(Model_Data[i]) > 2:
+			if len(Model_Data[i]) > 3:
 				Count_Col = len(Model_Data[i])#Count_Col是二维列表内的列表的长度
 				for j in range(Count_Col):
 					item = QStandardItem(Model_Data[i][j])
 					self.itemModel.setItem(i,j,item)
+			print(Model_Data[i])
 	def __CreateChecked(self,checkName,checkText):
 		'''
 		创建复选框
