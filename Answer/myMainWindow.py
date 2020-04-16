@@ -1,7 +1,7 @@
 import sys,os,re,xlrd
-from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog,QAbstractItemView,QDialog
+from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog,QAbstractItemView
 from PyQt5.QtCore import pyqtSlot,Qt
-from PyQt5.QtGui import QStandardItemModel,QStandardItem,QFont
+from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from PyQt5.QtWidgets import QCheckBox
 # from PyQt5.QtSql import
 # from PyQt5.QtMultimedia import
@@ -16,9 +16,6 @@ class Key_Word(Enum):
 	REP_WORD = re.compile(r'A.\s+')  # A.后面若干空格
 
 	TYPE = ['单选题', '多选题', '判断题']
-
-	FILE_PATH = os.getcwd() + "\File\exam_bat"  # 格式化后的文件路径
-	TEMP_PATH = os.getcwd() + "\File\exam_tmp"  # 临时文件路径
 
 
 class QmyMainWindow(QMainWindow):
@@ -35,13 +32,16 @@ class QmyMainWindow(QMainWindow):
 		self.ui.btnPrevious.setEnabled(False)
 		self.ui.spinBox.setEnabled(False)
 	##==========自定义功能函数==========
-	def __ini_File(self,FileName):
+	def __ini_File(self):
 		'''
 		初始化文档,令A.选项进入下一行
 		:return:
 		'''
-		with open(Key_Word.FILE_PATH.value, 'w', encoding='utf-8') as f:
-			with open(FileName, 'r', encoding='utf8') as ef:
+		FILE_PATH = os.path.dirname(self.File_path)+"exam_bat"#获取文件夹名称+新文件名
+		TEMP_PATH = os.path.dirname(self.File_path)+"exam_tmp"#获取文件夹名称+临时文件名
+
+		with open(FILE_PATH, 'w', encoding='utf-8') as f:
+			with open(self.File_path, 'r', encoding='utf8') as ef:
 				lines = ef.readlines()
 				for line in lines:
 					line = line.strip(" ")
@@ -59,8 +59,8 @@ class QmyMainWindow(QMainWindow):
 					elif line =='一、单选题\n' or line =='二、多选题\n' or line =='三、判断题\n':
 						continue
 					f.write(line)
-		with open(Key_Word.TEMP_PATH.value, 'w', encoding="utf-8") as nf:
-			with open(Key_Word.FILE_PATH.value, 'r', encoding="utf-8") as f:
+		with open(TEMP_PATH, 'w', encoding="utf-8") as nf:
+			with open(FILE_PATH, 'r', encoding="utf-8") as f:
 				lines = f.readlines()  # 按行读取文件,返回的是一个列表
 				for i in range(len(lines)):
 					if lines[i] =='\n':  # 列表元素为空则不进行判断,进入下一行遍历
@@ -70,8 +70,8 @@ class QmyMainWindow(QMainWindow):
 						result = re.sub('A.\s+', "A.", lines[i])  # 格式化A.选项,令其后只有两个空格
 						lines[i] = result  # 替换当前元素
 					nf.write(lines[i])
-		os.remove(Key_Word.FILE_PATH.value)
-		os.rename(Key_Word.TEMP_PATH.value, Key_Word.FILE_PATH.value)
+		os.remove(FILE_PATH)
+		os.rename(TEMP_PATH, FILE_PATH)
 
 	def __Ini_Model_Data(self):
 		'''
@@ -131,7 +131,6 @@ class QmyMainWindow(QMainWindow):
 			if Key_Word.TYPE.value.__contains__(rows[5]):#按照题目类型进行匹配
 				rows = rows[5:9]
 				try:#格式化列表内的元素
-					print(rows)
 					rows[1] = rows[1].replace(' ', '')
 					rows[1] = rows[1].replace('（', "(")
 					rows[1] = rows[1].replace('）', ")")
@@ -189,7 +188,7 @@ class QmyMainWindow(QMainWindow):
 
 		elif self.flt == "exam(*.txt)":#如果打开的是txt文档
 			self.ui.btnInit.setEnabled(True)#打开初始化按钮
-			self.File_path=self.__FileName#获取文件路径
+			self.Open_File_path=self.__FileName#获取文件路径
 		elif self.flt == "excle(*.xls)":
 			self.File_Exc_path = self.__FileName  # 获取文件路径
 			self.__IntiExcleFile(self.File_Exc_path)#获得self.Excle_List列表
@@ -200,36 +199,38 @@ class QmyMainWindow(QMainWindow):
 		:param index:
 		:return:
 		'''
-		self.ui.lineEdit.clear()
-		self.__Signal = index.row()
-		for i in self.ui.groupBox_2.children():
-			if type(i) == QCheckBox:
-				i.deleteLater()#删除checkBox组件
-		item = self.itemModel.item(self.__Signal,1)#获取题目的单元格的QStandardItem对象
-		self.__Title = item.text()#
-		self.ui.lineEdit.setText(self.__Title)#给文本框设置文字
+		try:
+			self.ui.lineEdit.clear()
+			self.__Signal = index.row()
+			for i in self.ui.groupBox_2.children():
+				if type(i) == QCheckBox:
+					i.deleteLater()#删除checkBox组件
+			item = self.itemModel.item(self.__Signal,1)#获取题目的单元格的QStandardItem对象
+			self.__Title = item.text()#
+			self.ui.lineEdit.setText(self.__Title)#给文本框设置文字
 
-		Column = self.itemModel.columnCount()#获取二维列表的长度
-		for i in range(2,Column):
-			item = self.itemModel.item(self.__Signal,i)#遍历二级列表内的元素
-			try:
-				anchor = item.text()
-				checkName = "chk_{}_{}".format(self.__Signal,i)
-				self.__CreateChecked(checkName,anchor)#按照选项个数动态生成生成复选框
-			except AttributeError:
-				break
-		self.__SelectAnswer()
-		for text in self.__Result:#正确答案的列表
-			for chkBox in self.ui.groupBox_2.children():#遍历groupBox_2组件下的子组件
-				if type(chkBox) == QCheckBox and text in chkBox.text():#条件组件事checkBox并且正确答案的文本在组件文本内能找到
-					if isinstance(chkBox,QCheckBox):
-						chkBox.setChecked(self.__CheckedFlags)#设置选中状态
-						# background-color:rgb(255, 132, 139)	控件颜色
-						# border-radius: 3px					圆角效果
-						# color: rgb(255, 255, 255)				字体颜色
-						chkBox.setStyleSheet("background-color:rgb(255, 132, 139);border-radius: 3px;color: rgb(255, 255, 255);")
-						break
-
+			Column = self.itemModel.columnCount()#获取二维列表的长度
+			for i in range(2,Column):
+				item = self.itemModel.item(self.__Signal,i)#遍历二级列表内的元素
+				try:
+					anchor = item.text()
+					checkName = "chk_{}_{}".format(self.__Signal,i)
+					self.__CreateChecked(checkName,anchor)#按照选项个数动态生成生成复选框
+				except AttributeError:
+					break
+			self.__SelectAnswer()
+			for text in self.__Result:#正确答案的列表
+				for chkBox in self.ui.groupBox_2.children():#遍历groupBox_2组件下的子组件
+					if type(chkBox) == QCheckBox and text in chkBox.text():#条件组件事checkBox并且正确答案的文本在组件文本内能找到
+						if isinstance(chkBox,QCheckBox):
+							chkBox.setChecked(self.__CheckedFlags)#设置选中状态
+							# background-color:rgb(255, 132, 139)	控件颜色
+							# border-radius: 3px					圆角效果
+							# color: rgb(255, 255, 255)				字体颜色
+							chkBox.setStyleSheet("background-color:rgb(255, 132, 139);border-radius: 3px;color: rgb(255, 255, 255);")
+							break
+		except AttributeError:
+			return
 
 		# print(self.__Result)
 	@pyqtSlot()
@@ -238,7 +239,7 @@ class QmyMainWindow(QMainWindow):
 		初始化按钮
 		:return:
 		'''
-		self.__ini_File(self.File_path)
+		self.__ini_File()
 		self.__Ini_Model_Data()
 		self.__InitModelFormList(self.Model_Data)
 
