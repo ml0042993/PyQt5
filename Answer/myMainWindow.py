@@ -1,7 +1,7 @@
 import sys,os,re,xlrd
 from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog,QAbstractItemView,QDialog
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtGui import QStandardItemModel,QStandardItem
+from PyQt5.QtCore import pyqtSlot,Qt
+from PyQt5.QtGui import QStandardItemModel,QStandardItem,QFont
 from PyQt5.QtWidgets import QCheckBox
 # from PyQt5.QtSql import
 # from PyQt5.QtMultimedia import
@@ -29,6 +29,7 @@ class QmyMainWindow(QMainWindow):
 		self.ui.listView.setEditTriggers(QAbstractItemView.NoEditTriggers)
 		self.itemModel = QStandardItemModel(self)
 		self.ui.listView.setModel(self.itemModel)
+		self.__CheckedFlags = Qt.Checked
 		self.ui.btnInit.setEnabled(False)
 		self.ui.btnNext.setEnabled(False)
 		self.ui.btnPrevious.setEnabled(False)
@@ -48,6 +49,8 @@ class QmyMainWindow(QMainWindow):
 					line = line.replace('\u3000', "")
 					line = line.replace('（', "(")
 					line = line.replace('）', ")")
+					line = line.replace('《', "<")
+					line = line.replace('》', ">")
 
 					anchor = Key_Word.INI_WORD.value.search(line)
 					if anchor:
@@ -101,7 +104,7 @@ class QmyMainWindow(QMainWindow):
 				for j in range(Count_Col):
 					item = QStandardItem(Model_Data[i][j])
 					self.itemModel.setItem(i,j,item)
-			print(Model_Data[i])
+			# print(Model_Data[i])
 	def __CreateChecked(self,checkName,checkText):
 		'''
 		创建复选框
@@ -128,8 +131,18 @@ class QmyMainWindow(QMainWindow):
 			if Key_Word.TYPE.value.__contains__(rows[5]):#按照题目类型进行匹配
 				rows = rows[5:9]
 				try:#格式化列表内的元素
+					print(rows)
 					rows[1] = rows[1].replace(' ', '')
-					rows[1] = rows[1].replace('（）', '()')
+					rows[1] = rows[1].replace('（', "(")
+					rows[1] = rows[1].replace('）', ")")
+					rows[1] = rows[1].replace('《', "<")
+					rows[1] = rows[1].replace('》', ">")
+					rows[2] = rows[2].replace(' ', '')
+					rows[2] = rows[2].replace('（', "(")
+					rows[2] = rows[2].replace('）', ")")
+					rows[2] = rows[2].replace('《', "<")
+					rows[2] = rows[2].replace('》', ">")
+
 					rows[2] = rows[2].split('$;$')
 					rows[-1] = rows[-1].replace('A', '0')
 					rows[-1] = rows[-1].replace('B', '1')
@@ -140,6 +153,7 @@ class QmyMainWindow(QMainWindow):
 					rows[-1] = rows[-1].replace('G', '6')
 					rows[-1] = rows[-1].replace('H', '7')
 					rows[-1] = rows[-1].replace('I', '8')
+
 					self.Excle_List.append(rows)
 				except Exception as e:
 					print(e)
@@ -147,7 +161,7 @@ class QmyMainWindow(QMainWindow):
 	def __SelectAnswer(self):
 		self.__Result=[]
 		for rows_Content in self.Excle_List:
-			print(rows_Content)
+			# print(rows_Content)
 			if rows_Content[1].__contains__(self.__Title):#rows_Content[1]题目存储的元素位置
 				# print(rows_Content[2],rows_Content[3])
 				if rows_Content[0] == '判断题':
@@ -205,7 +219,19 @@ class QmyMainWindow(QMainWindow):
 			except AttributeError:
 				break
 		self.__SelectAnswer()
-		print(self.__Result)
+		for text in self.__Result:#正确答案的列表
+			for chkBox in self.ui.groupBox_2.children():#遍历groupBox_2组件下的子组件
+				if type(chkBox) == QCheckBox and text in chkBox.text():#条件组件事checkBox并且正确答案的文本在组件文本内能找到
+					if isinstance(chkBox,QCheckBox):
+						chkBox.setChecked(self.__CheckedFlags)#设置选中状态
+						# background-color:rgb(255, 132, 139)	控件颜色
+						# border-radius: 3px					圆角效果
+						# color: rgb(255, 255, 255)				字体颜色
+						chkBox.setStyleSheet("background-color:rgb(255, 132, 139);border-radius: 3px;color: rgb(255, 255, 255);")
+						break
+
+
+		# print(self.__Result)
 	@pyqtSlot()
 	def on_btnInit_clicked(self):
 		'''
