@@ -28,8 +28,9 @@ def question_tit():
 				question_title = re.sub('（）', '()', result)
 				yield question_title
 
-def question():
-	return zip(question_num(),question_tit())
+# def question():
+# 	list_que = []
+# 	for i in range(len(question_num())):
 
 def excle_answer():
 	read_answer = xlrd.open_workbook('./flie/exam_excle.xls')
