@@ -3,9 +3,7 @@ from PyQt5.QtWidgets import QApplication,QMainWindow,QFileDialog,QAbstractItemVi
 from PyQt5.QtCore import pyqtSlot,Qt
 from PyQt5.QtGui import QStandardItemModel,QStandardItem
 from PyQt5.QtWidgets import QCheckBox
-# from PyQt5.QtSql import
-# from PyQt5.QtMultimedia import
-# from PyQt5.QtMultimediaWidgets import
+
 from enum import Enum
 from ui_MainWindow import Ui_MainWindow
 
@@ -24,6 +22,7 @@ class QmyMainWindow(QMainWindow):
 		self.ui = Ui_MainWindow()#创建Ui对象
 		self.ui.setupUi(self)#构造UI
 		self.ui.listView.setEditTriggers(QAbstractItemView.NoEditTriggers)
+		self.BASE_PATH = os.getcwd()
 		self.itemModel = QStandardItemModel(self)
 		self.ui.listView.setModel(self.itemModel)
 		self.__CheckedFlags = Qt.Checked
@@ -37,11 +36,11 @@ class QmyMainWindow(QMainWindow):
 		初始化文档,令A.选项进入下一行
 		:return:
 		'''
-		FILE_PATH = os.path.dirname(self.File_path)+"exam_bat"#获取文件夹名称+新文件名
-		TEMP_PATH = os.path.dirname(self.File_path)+"exam_tmp"#获取文件夹名称+临时文件名
+		self.FILE_PATH = os.path.dirname(self.Open_File_path)+"exam_bat"#获取文件夹名称+新文件名
+		TEMP_PATH = os.path.dirname(self.Open_File_path)+"exam_tmp"#获取文件夹名称+临时文件名
 
-		with open(FILE_PATH, 'w', encoding='utf-8') as f:
-			with open(self.File_path, 'r', encoding='utf8') as ef:
+		with open(self.FILE_PATH, 'w', encoding='utf-8') as f:
+			with open(self.Open_File_path, 'r', encoding='utf8') as ef:
 				lines = ef.readlines()
 				for line in lines:
 					line = line.strip(" ")
@@ -60,7 +59,7 @@ class QmyMainWindow(QMainWindow):
 						continue
 					f.write(line)
 		with open(TEMP_PATH, 'w', encoding="utf-8") as nf:
-			with open(FILE_PATH, 'r', encoding="utf-8") as f:
+			with open(self.FILE_PATH, 'r', encoding="utf-8") as f:
 				lines = f.readlines()  # 按行读取文件,返回的是一个列表
 				for i in range(len(lines)):
 					if lines[i] =='\n':  # 列表元素为空则不进行判断,进入下一行遍历
@@ -70,8 +69,8 @@ class QmyMainWindow(QMainWindow):
 						result = re.sub('A.\s+', "A.", lines[i])  # 格式化A.选项,令其后只有两个空格
 						lines[i] = result  # 替换当前元素
 					nf.write(lines[i])
-		os.remove(FILE_PATH)
-		os.rename(TEMP_PATH, FILE_PATH)
+		os.remove(self.FILE_PATH)
+		os.rename(TEMP_PATH, self.FILE_PATH)
 
 	def __Ini_Model_Data(self):
 		'''
@@ -79,7 +78,7 @@ class QmyMainWindow(QMainWindow):
 		:return:
 		'''
 		self.Model_Data = []
-		with open(Key_Word.FILE_PATH.value, 'r', encoding="utf-8") as f:
+		with open(self.FILE_PATH, 'r', encoding="utf-8") as f:
 			Start = 0
 			End = 0
 			lines = f.readlines()
@@ -172,6 +171,16 @@ class QmyMainWindow(QMainWindow):
 					for i in rows_Content[3]:#遍历答案,i是按照ABCD转换的int型数字01234,数字作为选项列表的索引号使用
 						i=int(i)
 						self.__Result.append(rows_Content[2][i])
+	def __OpenExcleFile(self):
+		'''
+		初始化后加载Excle文档,
+		:return:
+		'''
+		self.__FileName,self.flt = QFileDialog.getOpenFileName(self,"打开excle文档",self.BASE_PATH,"excle(*.xls)")
+		if self.__FileName == "":
+			return
+		self.File_Exc_path = self.__FileName  # 获取文件路径
+		self.__IntiExcleFile(self.File_Exc_path)  # 获得self.Excle_List列表
 
 	##==========事件处理函数===========
 
@@ -182,17 +191,13 @@ class QmyMainWindow(QMainWindow):
 		打开文件按钮
 		:return:
 		'''
-		self.__FileName,self.flt = QFileDialog.getOpenFileName(self,"打开一个文件",Key_Word.FILE_PATH.value,"exam(*.txt);;excle(*.xls)")
+		self.__FileName,self.flt = QFileDialog.getOpenFileName(self,"打开一个文件",self.BASE_PATH,"exam(*.txt)")
 		if self.__FileName == "":
 			return
 
-		elif self.flt == "exam(*.txt)":#如果打开的是txt文档
-			self.ui.btnInit.setEnabled(True)#打开初始化按钮
-			self.Open_File_path=self.__FileName#获取文件路径
-		elif self.flt == "excle(*.xls)":
-			self.File_Exc_path = self.__FileName  # 获取文件路径
-			self.__IntiExcleFile(self.File_Exc_path)#获得self.Excle_List列表
-			# print(self.Excle_List)
+		self.ui.btnInit.setEnabled(True)#打开初始化按钮
+		self.Open_File_path=self.__FileName#获取文件路径
+		# print(self.Excle_List)
 	def on_listView_clicked(self,index):
 		'''
 		index.row()是行号
@@ -240,6 +245,7 @@ class QmyMainWindow(QMainWindow):
 		:return:
 		'''
 		self.__ini_File()
+		self.__OpenExcleFile()
 		self.__Ini_Model_Data()
 		self.__InitModelFormList(self.Model_Data)
 
