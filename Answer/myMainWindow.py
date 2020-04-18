@@ -52,10 +52,21 @@ class QmyMainWindow(QMainWindow):
 					line = line.replace('》', ">")
 
 					anchor = Key_Word.INI_WORD.value.search(line)
+					# titel_anchor = Key_Word.TIT_WORD.value.search(line)
+					# if titel_anchor:
+					# 	linea = TITLE_ANCHOR+'\n' + line
+					# 	print(linea)
 					if anchor:
-						result = re.sub("A.", "\nA.", line)  # 令A选项格式化到下一行,并和B选项对齐
+						result = re.sub("A.", "\n"+TITLE_ANCHOR+"\nA.", line)  # 令A选项格式化到下一行,并和B选项对齐
 						line = result
-					elif line =='一、单选题\n' or line =='二、多选题\n' or line =='三、判断题\n':
+					elif line =='一、单选题\n':
+						TITLE_ANCHOR = '单选题'
+						continue
+					elif line =='二、多选题\n':
+						TITLE_ANCHOR = '多选题'
+						continue
+					elif line =='三、判断题\n':
+						TITLE_ANCHOR = '判断题'
 						continue
 					f.write(line)
 		with open(TEMP_PATH, 'w', encoding="utf-8") as nf:
@@ -157,11 +168,13 @@ class QmyMainWindow(QMainWindow):
 					print(e)
 
 	def __SelectAnswer(self):
+		'''
+		选择正确答案
+		:return:
+		'''
 		self.__Result=[]
 		for rows_Content in self.Excle_List:
-			# print(rows_Content)
-			if rows_Content[1].__contains__(self.__Title):#rows_Content[1]题目存储的元素位置
-				# print(rows_Content[2],rows_Content[3])
+			if rows_Content[1].__contains__(self.__Title) and rows_Content[0]==self.__TYPE:#rows_Content[1]题目存储的元素位置，判断题目类型是那种类型的题目
 				if rows_Content[0] == '判断题':
 					if rows_Content[3] == "0":
 						self.__Result.append('A.对')
@@ -212,10 +225,11 @@ class QmyMainWindow(QMainWindow):
 					i.deleteLater()#删除checkBox组件
 			item = self.itemModel.item(self.__Signal,1)#获取题目的单元格的QStandardItem对象
 			self.__Title = item.text()#
+			self.__TYPE = self.itemModel.item(self.__Signal,2).text()#题目类型的文本
 			self.ui.lineEdit.setText(self.__Title)#给文本框设置文字
 
 			Column = self.itemModel.columnCount()#获取二维列表的长度
-			for i in range(2,Column):
+			for i in range(3,Column):
 				item = self.itemModel.item(self.__Signal,i)#遍历二级列表内的元素
 				try:
 					anchor = item.text()
