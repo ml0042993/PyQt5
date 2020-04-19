@@ -51,7 +51,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_3.setSpacing(6)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.lineEdit = QtWidgets.QLineEdit(self.groupBox_2)
-        self.lineEdit.setEnabled(False)
+        self.lineEdit.setEnabled(True)
         self.lineEdit.setDragEnabled(False)
         self.lineEdit.setReadOnly(False)
         self.lineEdit.setClearButtonEnabled(False)
