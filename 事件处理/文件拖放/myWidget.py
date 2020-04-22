@@ -1,6 +1,6 @@
 import sys,os
 from PyQt5.QtWidgets import QApplication,QWidget
-# from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt
+from PyQt5.QtCore import pyqtSlot,pyqtSignal,Qt,QSize
 from PyQt5.QtGui import QPixmap
 # from PyQt5.QtWidgets import
 # from PyQt5.QtSql import
@@ -23,10 +23,26 @@ class QmyWidget(QWidget):
 		self.ui.label.setAcceptDrops(False)#设置允许接收
 		self.ui.plainTextEdit.setAcceptDrops(False)
 		self.ui.label.setScaledContents(True)#适应label大小
-		print(self.ui.label.geometry())
+		self.__SetSizeLabel()
 
 	##==========自定义功能函数==========
+	def __SetSizeLabel(self):
+		'''
+		设置label的大小
+		:return:
+		'''
+		print(self.ui.label.size())
+		QWidget_size_width = super().width()
+		QWidget_size_height = super().height()
+		plainTextEdit_width =self.ui.plainTextEdit.size().width()
+		plainTextEdit_height = self.ui.plainTextEdit.size().height()
 
+		width = QWidget_size_width-plainTextEdit_width
+		height = QWidget_size_height-plainTextEdit_height
+
+		rect = self.ui.label.geometry()
+		self.ui.label.setGeometry(rect.left(),rect.top(),width,height)
+		print(self.ui.label.size())
 	##==========事件处理函数===========
 
 	def dragEnterEvent(self,event):
@@ -69,7 +85,7 @@ class QmyWidget(QWidget):
 			print(basename,ext)
 			ext= ext.upper()#文件类型.jpg
 
-			if ext == ".JPG":
+			if ext == ".bmp":
 				event.acceptProposedAction()#接受拖动操作，允许后续的放置操作
 			else:
 				event.ignore()
