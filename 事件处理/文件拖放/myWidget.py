@@ -19,11 +19,11 @@ class QmyWidget(QWidget):
 		用于设置窗体组件是否可以接收放置操作
 		可以重新定义dragEnterEvent（）和dropEvent（）等事件函数实现特定操作
 		'''
+		self.__SetSizeLabel()
 		self.setAcceptDrops(True)#设置全局允许拖放
-		self.ui.label.setAcceptDrops(False)#设置允许接收
+		self.ui.label.setAcceptDrops(True)#设置允许接收
 		self.ui.plainTextEdit.setAcceptDrops(False)
 		self.ui.label.setScaledContents(True)#适应label大小
-		self.__SetSizeLabel()
 
 	##==========自定义功能函数==========
 	def __SetSizeLabel(self):
