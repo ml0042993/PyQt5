@@ -44,13 +44,23 @@ class QmyWidget(QWidget):
 
 	##==========自定义功能函数==========
 	def __refreshToUI(self):
+		'''
+		acceptDrops()返回bool值，表示组件是否可以作为drop site接受放置操作
+		dragEnabled()返回bool值，表示组件是否可以作为drag site启动拖放操作
+		dragDropMode()返回枚举类型 QAbstractItemView.DragDropMode，表示拖放操作模式
+		defaultDropAction()返回枚举类型 Qt.DrapAction 当组件作为drap site时，它表示在完成拖放操作时drag site组件的数据操作模式
+		:return:
+		'''
 		self.ui.chkBox_AcceptDrops.setChecked(self.__itemView.acceptDrops())
+		print(self.__itemView.dragDropMode())
+		print(self.__itemView.defaultDropAction())
 		self.ui.chkBox_DragEnabled.setChecked(self.__itemView.dragEnabled())
 		self.ui.combo_Mode.setCurrentIndex(self.__itemView.dragDropMode())
 		index = self.__getDropActionIndex(self.__itemView.defaultDropAction())
 		self.ui.combo_DefaultAction.setCurrentIndex(index)
 
 	def __getDropActionIndex(self,actionType):
+		print(actionType)
 		if actionType==Qt.CopyAction:
 			return 0
 		elif actionType == Qt.MoveAction:
@@ -62,7 +72,38 @@ class QmyWidget(QWidget):
 		else:
 			return 0
 
+	def __getDropActionType(self,index):
+		if index == 0:
+			return Qt.CopyAction
+		elif index == 1:
+			return Qt.MoveAction
+		elif index == 2:
+			return Qt.LinkAction
+		elif index == 3:
+			return Qt.IgnoreAction
+		else:
+			return Qt.CopyAction
+
+
 	##==========事件处理函数===========
+	def eventFilter(self, watched, event):
+		if event.type() == QEvent.KeyPress and event.key()==Qt.Key_Delete:
+			if watched == self.ui.listSource:
+				self.ui.listSource.takeItem(self.ui.listSource.currentRow())
+			elif watched == self.ui.listWidget:
+				self.ui.listWidget.takeItem(self.ui.listWidget.currentRow())
+			elif watched == self.ui.treeWidget:
+				curItem = self.ui.treeWidget.currentItem()
+				if curItem.parent() != None:
+					parItem = curItem.parent()
+					parItem.removeChild(curItem)
+				else:
+					index = self.ui.treeWidget.indexOfTopLevelItem(curItem)
+					self.ui.treeWidget.takeTopLevelItem(index)
+			elif watched == self.ui.tableWidget:
+				self.ui.tableWidget.takeItem(self.ui.tableWidget.currentRow(),
+											 self.ui.tableWidget.currentColumn())
+		return super().eventFilter(watched,event)
 
 	##==========由connectSlotsByName()自动关联的槽函数====
 	@pyqtSlot()
@@ -82,6 +123,21 @@ class QmyWidget(QWidget):
 	def on_radio_Table_clicked(self):
 		self.__itemView = self.ui.tableWidget
 		self.__refreshToUI()
+
+	@pyqtSlot(bool)
+	def on_chkBox_AcceptDrops_clicked(self,checked):
+		self.__itemView.setAcceptDrops(checked)
+	@pyqtSlot(bool)
+	def on_chkBox_DragEnabled_clicked(self,checked):
+		self.__itemView.setDragEnabled(checked)
+	@pyqtSlot(int)
+	def on_combo_Mode_currentIndexChanged(self,index):
+		mode = QAbstractItemView.DragDropMode(index)
+		self.__itemView.setAcceptDrops(mode)
+	@pyqtSlot(bool)
+	def on_combo_DefaultAction_currentIndexChanged(self,index):
+		actionType = self.__getDropActionType(index)
+		self.__itemView.setDefaultDropAction(actionType)
 
 	##=========自定义槽函数============
 
